@@ -1,8 +1,7 @@
 package pacandroid.android;
 
 import android.util.Log;
-
-import pacandroid.util.AppLog;
+import pacandroid.AppLog;
 
 public class AndroidLog implements AppLog.Log {
 

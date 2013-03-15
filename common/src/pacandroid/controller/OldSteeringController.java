@@ -1,10 +1,10 @@
 package pacandroid.controller;
 
 import com.badlogic.gdx.math.Vector2;
+import pacandroid.AppLog;
 import pacandroid.model.AndyAndroid;
 import pacandroid.model.Level;
 import pacandroid.screens.GameScreen;
-import pacandroid.util.AppLog;
 
 public class OldSteeringController {
 
