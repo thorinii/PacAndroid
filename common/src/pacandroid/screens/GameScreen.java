@@ -16,6 +16,8 @@ import pacandroid.view.DefaultLevelRenderer;
 import pacandroid.view.LevelRenderer;
 import pacandroid.model.Level;
 import pacandroid.PacAndroidGame;
+import pacandroid.util.MathUtil;
+import pacandroid.util.SampleCollector;
 
 /**
  *
@@ -27,11 +29,15 @@ public class GameScreen extends AbstractScreen {
      * The size of 1 grid square (or 2 units): 32px
      */
     public static final int GRID_UNIT = 55;
+    public static final float MIN_DELTA = 0.015f;
+    public static final float REGULAR_DELTA = 0.02f;
     private Level level;
     private LevelController controller;
     private LevelRenderer[] renderers;
     private SteeringController steeringController;
     private LevelState levelState;
+    //
+    private float lastSmallDelta;
 
     public GameScreen(PacAndroidGame game) {
         super(game);
@@ -41,10 +47,15 @@ public class GameScreen extends AbstractScreen {
     public void render(float delta) {
         super.render(delta);
 
-        delta = Math.min(0.02f, delta);
+        if (delta >= MIN_DELTA || lastSmallDelta >= REGULAR_DELTA) {
+            updateLevel(REGULAR_DELTA);
+            lastSmallDelta = 0;
+        } else {
+            updateLevel(MIN_DELTA);
+            lastSmallDelta += delta;
+        }
 
-        updateLevel(delta);
-        renderLevel(delta);
+        renderLevel(REGULAR_DELTA);
     }
 
     private void updateLevel(float delta) {
