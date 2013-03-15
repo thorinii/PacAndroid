@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/lp-personal-projects/!svn/ver/10/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/model/loader
+END
+LevelFileConstants.java
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/lp-personal-projects/!svn/ver/16/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/model/loader/LevelFileConstants.java
+END
+LevelFileWriter.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/lp-personal-projects/!svn/ver/8/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/model/loader/LevelFileWriter.java
+END
+LevelFileWriterTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/lp-personal-projects/!svn/ver/16/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/model/loader/LevelFileWriterTest.java
+END
+LevelFileReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/lp-personal-projects/!svn/ver/8/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/model/loader/LevelFileReader.java
+END
+LevelFileReaderTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/lp-personal-projects/!svn/ver/16/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/model/loader/LevelFileReaderTest.java
+END
+LevelLoader.java
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/lp-personal-projects/!svn/ver/16/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/model/loader/LevelLoader.java
+END

@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/lp-personal-projects/!svn/ver/10/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/view
+END
+AppleRenderer.java
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/lp-personal-projects/!svn/ver/16/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/view/AppleRenderer.java
+END
+LevelRenderer.java
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/lp-personal-projects/!svn/ver/16/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/view/LevelRenderer.java
+END
+SteeringControllerView.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/lp-personal-projects/!svn/ver/8/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/view/SteeringControllerView.java
+END
+AndyAndroidRenderer.java
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/lp-personal-projects/!svn/ver/16/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/view/AndyAndroidRenderer.java
+END
+DefaultLevelRenderer.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/lp-personal-projects/!svn/ver/16/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/view/DefaultLevelRenderer.java
+END
+EntityRenderer.java
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/lp-personal-projects/!svn/ver/16/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/view/EntityRenderer.java
+END
+DebugWorldRenderer.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/lp-personal-projects/!svn/ver/8/eclipse/pacandroid/trunk/PacAndroid/src/com/flipsidevirtual/pacandroid/view/DebugWorldRenderer.java
+END

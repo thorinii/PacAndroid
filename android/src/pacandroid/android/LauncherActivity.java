@@ -1,16 +1,24 @@
 package pacandroid.android;
 
-import android.app.Activity;
 import android.os.Bundle;
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import pacandroid.AppLog;
+import pacandroid.PacAndroidGame;
 
-public class LauncherActivity extends Activity {
+public class LauncherActivity extends AndroidApplication {
 
-    /**
-     * Called when the activity is first created.
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+
+        AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+        config.useAccelerometer = false;
+        config.useCompass = false;
+        config.useWakelock = true;
+        config.useGL20 = true;
+
+        AppLog.init(new AndroidLog());
+        initialize(new PacAndroidGame(), config);
     }
 }

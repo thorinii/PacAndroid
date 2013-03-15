@@ -4,6 +4,11 @@
  */
 package pacandroid.desktop;
 
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import pacandroid.AppLog;
+import pacandroid.DesktopLog;
+import pacandroid.PacAndroidGame;
+
 /**
  *
  * @author lachlan
@@ -14,6 +19,10 @@ public class Launcher {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        if (args.length == 1)
+            System.setProperty("level-file", args[0]);
+
+        AppLog.init(new DesktopLog());
+        new LwjglApplication(new PacAndroidGame(), "PacAndroid", 1280, 800, true);
     }
 }

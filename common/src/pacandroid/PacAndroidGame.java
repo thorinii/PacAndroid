@@ -5,6 +5,7 @@
 package pacandroid;
 
 import com.badlogic.gdx.Game;
+import pacandroid.screens.GameScreen;
 
 /**
  *
@@ -14,7 +15,7 @@ public class PacAndroidGame extends Game {
 
     @Override
     public void create() {
-        // TODO: setScreen(new GameScreen(this));
+        setScreen(new GameScreen(this));
     }
 
     @Override

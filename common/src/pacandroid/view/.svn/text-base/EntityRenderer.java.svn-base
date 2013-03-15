@@ -1,0 +1,9 @@
+package com.flipsidevirtual.pacandroid.view;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.flipsidevirtual.pacandroid.model.Entity;
+
+public interface EntityRenderer {
+    public void renderEntity(Entity entity, SpriteBatch batch,
+            DefaultLevelRenderer renderer);
+}
