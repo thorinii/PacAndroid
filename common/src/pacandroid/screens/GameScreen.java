@@ -29,6 +29,7 @@ public class GameScreen extends AbstractScreen {
     public static final int GRID_UNIT = 55;
     public static final float MIN_DELTA = 0.015f;
     public static final float REGULAR_DELTA = 0.02f;
+    private final LevelLoader loader;
     private Level level;
     private LevelController controller;
     private LevelRenderer[] renderers;
@@ -38,7 +39,12 @@ public class GameScreen extends AbstractScreen {
     private float lastSmallDelta;
 
     public GameScreen(PacAndroidGame game) {
+        this(game, new LevelLoader());
+    }
+
+    public GameScreen(PacAndroidGame game, LevelLoader loader) {
         super(game);
+        this.loader = loader;
     }
 
     @Override
@@ -84,11 +90,7 @@ public class GameScreen extends AbstractScreen {
         Gdx.input.setInputProcessor(new InputHandler());
 
         levelState = new LevelState();
-
-
-        LevelLoader loader = new LevelLoader();
         level = loader.loadBuiltinLevel(0, levelState);
-
 
         controller = new LevelController(level, levelState);
 

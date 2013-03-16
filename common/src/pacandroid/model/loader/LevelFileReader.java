@@ -18,9 +18,7 @@ public class LevelFileReader {
 
         for (int i = 0; i < oldG.getWidth(); i++) {
             for (int j = 0; j < oldG.getHeight(); j++) {
-                l.getGrid().set(i,
-                                oldG.getHeight() - j - 1,
-                                oldG.get(i, j));
+                l.getGrid().set(i, j, oldG.get(i, j));
             }
         }
 

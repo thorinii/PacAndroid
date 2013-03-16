@@ -91,20 +91,20 @@ public class DefaultLevelRenderer implements LevelRenderer {
     }
 
     private void loadColoursAndTextures() {
-        wallTexture = new Texture(Gdx.files.internal("640x/wall-32x32.png"));
-        scoreIconTexture = new Texture(Gdx.files.internal("score.png"));
-        lifeIconTexture = new Texture(Gdx.files.internal("heart.png"));
+        wallTexture = new Texture(Gdx.files.classpath("640x/wall-32x32.png"));
+        scoreIconTexture = new Texture(Gdx.files.classpath("score.png"));
+        lifeIconTexture = new Texture(Gdx.files.classpath("heart.png"));
 
         jellybeanTextures = new Texture[7];
         for (int i = 0; i < jellybeanTextures.length; i++) {
             jellybeanTextures[i] = new Texture(Gdx.files
-                    .internal("640x/jellybean-32x32-" + (i + 1) + ".png"));
+                    .classpath("640x/jellybean-32x32-" + (i + 1) + ".png"));
         }
 
         powerupTextures = new Texture[5];
         for (int i = 0; i < powerupTextures.length; i++) {
             powerupTextures[i] = new Texture(Gdx.files
-                    .internal("640x/icecream-32x32-" + (i + 1) + ".png"));
+                    .classpath("640x/icecream-32x32-" + (i + 1) + ".png"));
         }
 
         fontRenderer = new FontRenderer();

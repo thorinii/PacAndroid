@@ -15,7 +15,7 @@ public class AndyAndroidRenderer implements EntityRenderer {
 
     public AndyAndroidRenderer() {
         texture = new Texture(Gdx.files
-                .internal("640x/andyandroid-30x30.png"));
+                .classpath("640x/andyandroid-30x30.png"));
     }
 
     @Override

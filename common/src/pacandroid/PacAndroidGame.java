@@ -5,6 +5,7 @@
 package pacandroid;
 
 import com.badlogic.gdx.Game;
+import pacandroid.model.loader.LevelLoader;
 import pacandroid.screens.GameScreen;
 
 /**
@@ -13,9 +14,22 @@ import pacandroid.screens.GameScreen;
  */
 public class PacAndroidGame extends Game {
 
+    private final LevelLoader loader;
+
+    public PacAndroidGame() {
+        this(null);
+    }
+
+    public PacAndroidGame(LevelLoader loader) {
+        this.loader = loader;
+    }
+
     @Override
     public void create() {
-        setScreen(new GameScreen(this));
+        if (loader != null)
+            setScreen(new GameScreen(this, loader));
+        else
+            setScreen(new GameScreen(this));
     }
 
     @Override

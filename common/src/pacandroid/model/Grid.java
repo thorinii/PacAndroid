@@ -47,4 +47,12 @@ public class Grid {
     public int get(int x, int y) {
         return wallGrid[x][y];
     }
+
+    public int getSafe(int x, int y, int def) {
+        try {
+            return get(x, y);
+        } catch (ArrayIndexOutOfBoundsException aioobe) {
+            return def;
+        }
+    }
 }

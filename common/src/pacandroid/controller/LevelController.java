@@ -155,7 +155,7 @@ public class LevelController {
             for (int j = 0; j < 50; j++) {
                 int space;
 
-                space = g.get(x + i, y + j);
+                space = g.getSafe(x + i, y + j, Grid.GRID_WALL);
                 if (space == Grid.GRID_EMPTY || space == Grid.GRID_JELLYBEAN) {
                     xy[0] = x + i;
                     xy[1] = y + j;
@@ -163,7 +163,7 @@ public class LevelController {
                 }
 
 
-                space = g.get(x - i, y + j);
+                space = g.getSafe(x - i, y + j, Grid.GRID_WALL);
                 if (space == Grid.GRID_EMPTY || space == Grid.GRID_JELLYBEAN) {
                     xy[0] = x - i;
                     xy[1] = y + j;
@@ -171,7 +171,7 @@ public class LevelController {
                 }
 
 
-                space = g.get(x + i, y - j);
+                space = g.getSafe(x + i, y - j, Grid.GRID_WALL);
                 if (space == Grid.GRID_EMPTY || space == Grid.GRID_JELLYBEAN) {
                     xy[0] = x + i;
                     xy[1] = y - j;
@@ -179,7 +179,7 @@ public class LevelController {
                 }
 
 
-                space = g.get(x - i, y - j);
+                space = g.getSafe(x - i, y - j, Grid.GRID_WALL);
                 if (space == Grid.GRID_EMPTY || space == Grid.GRID_JELLYBEAN) {
                     xy[0] = x - i;
                     xy[1] = y - j;

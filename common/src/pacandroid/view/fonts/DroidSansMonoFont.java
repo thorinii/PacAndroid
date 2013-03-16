@@ -20,7 +20,7 @@ public class DroidSansMonoFont extends Font {
 
     public DroidSansMonoFont() {
         super(new Texture(Gdx.files
-                .internal("fonts/droid-sans-mono-18-white.png")), MAP);
+                .classpath("fonts/droid-sans-mono-18-white.png")), MAP);
     }
 
     @Override

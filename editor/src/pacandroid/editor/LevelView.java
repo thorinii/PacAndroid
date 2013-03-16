@@ -75,7 +75,6 @@ public class LevelView extends JPanel {
         workingOffset.y = size.height / 2 - workingSpace.y / 2;
 
         gridSize = ((double) workingSpace.x) / Level.GRID_WIDTH;
-        ;
     }
 
     public Level getLevel() {
@@ -107,6 +106,8 @@ public class LevelView extends JPanel {
         grid.x = (int) ((mouse.x - workingOffset.x) / gridSize);
         grid.y = (int) ((mouse.y - workingOffset.y) / gridSize);
 
+        grid.y = level.getGridHeight() - grid.y - 1;
+
         return grid;
     }
 
@@ -118,7 +119,9 @@ public class LevelView extends JPanel {
                 int y = (int) (workingOffset.y + gridSize * j);
                 Color colour;
 
-                switch (grid.get(i, j)) {
+                int cell = grid.get(i, grid.getHeight() - j - 1);
+
+                switch (cell) {
                     case Grid.GRID_WALL:
                         colour = Color.BLACK;
                         break;
@@ -134,8 +137,8 @@ public class LevelView extends JPanel {
                 g.fillRect(x, y, (int) Math.ceil(gridSize), (int) Math
                         .ceil(gridSize));
 
-                if (cellImages[grid.get(i, j)] != null) {
-                    Image img = cellImages[grid.get(i, j)];
+                if (cellImages[cell] != null) {
+                    Image img = cellImages[cell];
                     g.drawImage(img, x, y, (int) gridSize, (int) gridSize, null);
                 }
             }
@@ -163,5 +166,15 @@ public class LevelView extends JPanel {
             g.drawLine(workingOffset.x, workingOffset.y + lineY,
                        workingOffset.x + lineX, workingOffset.y + lineY);
         }
+    }
+
+    public boolean validateLevel() {
+        Grid g = level.getGrid();
+
+        for (int x = 0; x < g.getWidth(); x++)
+            for (int y = 0; y < g.getHeight(); y++)
+                if (g.get(x, y) == Grid.GRID_ANDROID_SPAWN)
+                    return true;
+        return false;
     }
 }

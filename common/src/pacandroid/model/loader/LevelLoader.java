@@ -1,7 +1,6 @@
 package pacandroid.model.loader;
 
 import java.io.InputStream;
-import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -14,7 +13,7 @@ import pacandroid.model.LevelState;
 public class LevelLoader {
 
     public Level loadBuiltinLevel(int levelIndex, LevelState levelState) {
-        String levelFile = "symmetrical-level1.palvl";
+        String levelFile = "tims-level.palvl";
         InputStream in;
 
         try {
@@ -27,11 +26,17 @@ public class LevelLoader {
                 handle = Gdx.files.classpath(levelFile);
             }
 
+            System.out.println(handle.name() + " " + handle.exists());
+
             if (!handle.exists()) {
                 handle = Gdx.files.absolute(levelFile);
+                System.out.println(handle.name() + " " + handle.exists());
 
-                if (!handle.exists())
+                if (!handle.exists()) {
                     handle = Gdx.files.absolute("test-data/" + levelFile);
+
+                    System.out.println(handle.name() + " " + handle.exists());
+                }
             }
 
             if (!handle.exists())
@@ -43,7 +48,7 @@ public class LevelLoader {
                 LevelFileReader reader = new LevelFileReader();
 
                 Level level = reader.readLevel(in);
-                spawnAndroid(level, levelState);
+                setupLevel(level, levelState);
 
                 return level;
             } finally {
@@ -59,31 +64,8 @@ public class LevelLoader {
         throw new UnsupportedOperationException();
     }
 
-    private Level createLevel() {
-        Level l = new Level();
-        return l;
-    }
-
-    private void fillGrid(Level l) {
-        Grid g = l.getGrid();
-
-        for (int i = 0; i < g.getWidth(); i++) {
-            for (int j = 0; j < g.getHeight(); j++) {
-                if ((i ^ j + i + j * j) < 10) {
-                    g.set(i, j, Grid.GRID_WALL);
-                } else {
-                    g.set(i, j, Grid.GRID_JELLYBEAN);
-                }
-            }
-        }
-
-
-        Random r = new Random();
-
-        int x = r.nextInt(g.getWidth());
-        int y = r.nextInt(g.getHeight());
-
-        g.set(x, y, Grid.GRID_ANDROID_SPAWN);
+    protected void setupLevel(Level level, LevelState levelState) {
+        spawnAndroid(level, levelState);
     }
 
     private void spawnAndroid(Level l, LevelState levelState) {

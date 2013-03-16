@@ -193,6 +193,12 @@ public class GUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (!levelView.validateLevel()) {
+                JOptionPane.showMessageDialog(GUI.this,
+                                              "Cannot save level: not valid");
+                return;
+            }
+
             if (fc == null) {
                 fc = new JFileChooser(".");
                 fc.setFileFilter(new FileFilter() {
@@ -237,6 +243,12 @@ public class GUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (!levelView.validateLevel()) {
+                JOptionPane.showMessageDialog(GUI.this,
+                                              "Cannot test level: not valid");
+                return;
+            }
+
             try {
                 File file = new File(File.createTempFile("test-lvl", ".palvl")
                         .getAbsolutePath());
@@ -250,11 +262,12 @@ public class GUI extends JFrame {
 
                 out.close();
 
+                ((JButton) e.getSource()).setEnabled(false);
                 startPADesktop(file);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
                 JOptionPane.showMessageDialog(GUI.this,
-                                              "Error Saving Level: "
+                                              "Cannot test level: "
                         + ioe.getMessage(),
                                               "PacAndroid Level Editor",
                                               JOptionPane.ERROR_MESSAGE);
@@ -263,9 +276,12 @@ public class GUI extends JFrame {
 
         private void startPADesktop(File level) throws IOException {
             try {
-                System.setProperty("level-file", level.toString());
+                //System.setProperty("level-file", level.toString());
 
-                final LwjglFrame frame = new LwjglFrame(new PacAndroidGame(),
+                FakeLevelLoader loader = new FakeLevelLoader(levelView.
+                        getLevel());
+                final LwjglFrame frame = new LwjglFrame(new PacAndroidGame(
+                        loader),
                                                         "PacAndroid", 1280, 800,
                                                         true);
                 frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -281,12 +297,6 @@ public class GUI extends JFrame {
                         });
                     }
                 });
-
-                // LwjglApplication app = new LwjglApplication(new PacAndroid(),
-                // "PacAndroid", 1280, 800,
-                // true);
-
-
             } catch (Exception e) {
                 throw new IOException(e);
             }
