@@ -7,4 +7,6 @@ public interface Timer {
     public boolean beforeTick();
 
     public boolean afterTick();
+    
+    public float getTime();
 }

@@ -61,6 +61,12 @@ public class Timers {
             return false;
         }
 
+        @Override
+        public float getTime() {
+            return time;
+        }
+
+        @Override
         public void update(float delta) {
             time += delta;
         }
@@ -99,6 +105,12 @@ public class Timers {
             return ticked && time > tickTime;
         }
 
+        @Override
+        public float getTime() {
+            return time;
+        }
+
+        @Override
         public void update(float delta) {
             time += delta;
         }

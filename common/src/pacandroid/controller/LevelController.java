@@ -245,10 +245,7 @@ public class LevelController {
      */
     private void processPowerups() {
         switch (levelState.getCurrentPowerup()) {
-            case HighScore:
-                // TODO: write this
-                break;
-            case Jellybean2x:
+            case DoubleScore:
                 levelState.getScore().doubleScore();
                 break;
             case NewLife:

@@ -9,24 +9,30 @@ public final class LevelState {
 
     public enum Powerup {
 
-        Null(-1),
-        KillAll(2000),
-        Edible(4000),
-        HighScore(0),
-        Jellybean2x(0),
-        NewLife(0),
-        LevelStartFreeze(3000, true);
+        Null(-1, null),
+        KillAll(2000, "Kill All"),
+        Edible(7000, "Edible"),
+        DoubleScore(0, "Double Score"),
+        NewLife(0, "New Life"),
+        LevelStartFreeze(3000, null, true);
 
-        Powerup(int buffMillis) {
-            this.buffSeconds = buffMillis;
+        Powerup(int buffMillis, String name) {
+            this.buffMillis = buffMillis;
             this.freeze = false;
+            this.name = name;
         }
 
-        Powerup(int buffMillis, boolean freeze) {
-            this.buffSeconds = buffMillis;
+        Powerup(int buffMillis, String name, boolean freeze) {
+            this.buffMillis = buffMillis;
             this.freeze = freeze;
+            this.name = name;
         }
-        public final int buffSeconds;
+
+        public boolean isHuman() {
+            return name != null;
+        }
+        public final int buffMillis;
+        public final String name;
         public final boolean freeze;
         private static final List<Powerup> VALUES =
                 Collections.unmodifiableList(Arrays.asList(values()));
@@ -93,10 +99,8 @@ public final class LevelState {
 
     public void setCurrentPowerup(Powerup currentPowerup) {
         this.currentPowerup = currentPowerup;
-        System.out.println("Setting Powerup: " + currentPowerup.name());
 
-        powerupTimeLeft = currentPowerup.buffSeconds;
-
+        powerupTimeLeft = currentPowerup.buffMillis;
         if (powerupTimeLeft < 0) {
             powerupTimeLeft = Integer.MIN_VALUE;
         }
@@ -106,11 +110,10 @@ public final class LevelState {
         Powerup[] valid = new Powerup[]{
             Powerup.KillAll,
             Powerup.Edible,
-            Powerup.HighScore,
-            Powerup.Jellybean2x,
+            Powerup.DoubleScore,
             Powerup.NewLife};
 
-        int hash = 41;
+        int hash = 23;
         hash = hash * 53 + x;
         hash = hash * 53 + y;
         hash %= valid.length;
@@ -120,10 +123,12 @@ public final class LevelState {
 
     public void updatePowerups(float tpf) {
         if (powerupTimeLeft != Integer.MIN_VALUE) {
-            powerupTimeLeft -= (int) (tpf * 1000);
-
-            if (powerupTimeLeft < 0) {
-                setCurrentPowerup(Powerup.Null);
+            if (powerupTimeLeft == 0) {
+                powerupTimeLeft = -1;
+            } else {
+                powerupTimeLeft -= (int) (tpf * 1000);
+                if (powerupTimeLeft < 0)
+                    setCurrentPowerup(Powerup.Null);
             }
         }
     }

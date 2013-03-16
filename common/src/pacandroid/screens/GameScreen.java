@@ -16,8 +16,6 @@ import pacandroid.view.DefaultLevelRenderer;
 import pacandroid.view.LevelRenderer;
 import pacandroid.model.Level;
 import pacandroid.PacAndroidGame;
-import pacandroid.util.MathUtil;
-import pacandroid.util.SampleCollector;
 
 /**
  *
@@ -66,8 +64,8 @@ public class GameScreen extends AbstractScreen {
             }
             level.removeDead();
 
-            controller.update(delta);
             levelState.updatePowerups(delta);
+            controller.update(delta);
 
         } catch (Exception e) {
             e.printStackTrace();

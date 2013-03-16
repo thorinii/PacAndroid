@@ -5,6 +5,7 @@
 package pacandroid.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import pacandroid.AppLog;
 import pacandroid.DesktopLog;
 import pacandroid.PacAndroidGame;
@@ -23,6 +24,13 @@ public class Launcher {
             System.setProperty("level-file", args[0]);
 
         AppLog.init(new DesktopLog());
-        new LwjglApplication(new PacAndroidGame(), "PacAndroid", 1280, 800, true);
+
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.title = "PacAndroid";
+        config.width = 1280;
+        config.height = 800;
+        config.useGL20 = true;
+
+        LwjglApplication app = new LwjglApplication(new PacAndroidGame(), config);
     }
 }

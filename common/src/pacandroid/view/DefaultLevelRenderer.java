@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,21 +23,28 @@ import pacandroid.view.fonts.FontRenderer;
 public class DefaultLevelRenderer implements LevelRenderer {
 
     private static final double SCREEN_RATIO = 5.0 / 8.0;
+    private static final float FADE_TIME = 1.5f;
+    //
     private final OrthographicCamera cam;
     private final SpriteBatch spriteBatch;
+    //
     private FontRenderer fontRenderer;
     private SteeringControllerView steeringControllerView;
     private final Map<Class<? extends Entity>, EntityRenderer> entityRenderers;
+    //
     private final Level level;
     private final LevelState levelState;
+    //
     private Texture wallTexture;
     private Texture scoreIconTexture;
     private Texture lifeIconTexture;
     private Texture[] jellybeanTextures;
     private Texture[] powerupTextures;
+    //
     private final float width, height;
     private float offsetX, offsetY;
     private float ppuW, ppuH;
+    //
     private Timer powerupShowTimer;
     private Powerup currentPowerup;
 
@@ -197,6 +205,8 @@ public class DefaultLevelRenderer implements LevelRenderer {
         int graphicY = 710;
 
         spriteBatch.draw(scoreIconTexture, offsetX + 10, offsetY + graphicY);
+
+        fontRenderer.setColor(Color.RED);
         fontRenderer.drawString(levelState.getScore().toString(), spriteBatch,
                                 (int) offsetX + 60, (int) offsetY + graphicY);
 
@@ -215,34 +225,51 @@ public class DefaultLevelRenderer implements LevelRenderer {
                 message = "Game Over";
             }
 
-            fontRenderer.drawString(message,
-                                    spriteBatch,
-                                    (int) width / 2, (int) height / 2);
+            fontRenderer.drawStringCentred(message,
+                                           spriteBatch,
+                                           (int) width / 2,
+                                           (int) height / 2);
         } else {
             Powerup powerup = levelState.getCurrentPowerup();
+            float showTime;
 
-            if (powerup == null || powerup == Powerup.Null
-                    && powerupShowTimer != null) {
-                if (powerupShowTimer.afterTick()) {
-                    currentPowerup = null;
-                    powerupShowTimer = null;
-                    return;
-                } else {
-                    powerup = currentPowerup;
-                }
-            } else {
-                powerupShowTimer = Timers.getSingleTimer(3000);
+            // Check for a new powerup... just make sure its not Null
+            if (powerup != currentPowerup && powerup != Powerup.Null) {
                 currentPowerup = powerup;
+                showTime = Math.max(0.2f, powerup.buffMillis / 1000f);
+
+                powerupShowTimer = Timers.getSingleTimer(showTime);
+            } else {
+                showTime = Math.max(0.2f, currentPowerup.buffMillis / 1000f);
             }
 
-            if (powerup == null || powerup == Powerup.Null)
-                return;
+            if (powerupShowTimer != null) {
+                // We don't want to tell everyone the level is frozen at the start
+                if (!currentPowerup.isHuman())
+                    return;
 
-            if (powerupShowTimer.beforeTick() || powerupShowTimer.isTick()
-                    || levelState.getCurrentPowerup() == powerup) {
-                fontRenderer.drawString(powerup.name(),
-                                        spriteBatch,
-                                        (int) width / 2, (int) height / 2);
+                if (powerupShowTimer.beforeTick()) {
+                    fontRenderer.setColor(Color.WHITE);
+                    fontRenderer.drawStringCentred(currentPowerup.name,
+                                                   spriteBatch,
+                                                   (int) width / 2,
+                                                   (int) height / 2);
+                } else {
+                    float fadeTime = powerupShowTimer.getTime() - showTime;
+                    float fade = Math.max(0, (FADE_TIME - fadeTime) / FADE_TIME);
+
+                    fontRenderer.setColor(new Color(1, 1, 1, fade));
+                    fontRenderer.drawStringCentred(currentPowerup.name,
+                                                   spriteBatch,
+                                                   (int) width / 2,
+                                                   (int) height / 2);
+                    fontRenderer.setColor(Color.WHITE);
+
+                    if (fade == 0) {
+                        currentPowerup = powerup;
+                        powerupShowTimer = null;
+                    }
+                }
             }
         }
     }
