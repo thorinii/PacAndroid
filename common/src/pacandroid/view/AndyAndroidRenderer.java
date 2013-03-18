@@ -9,13 +9,16 @@ import pacandroid.model.Direction;
 import pacandroid.model.Entity;
 import pacandroid.model.GridLockedDynamicEntity;
 
-public class AndyAndroidRenderer implements EntityRenderer {
-
-    private Texture texture;
+public class AndyAndroidRenderer extends AnimatedEntityRenderer {
 
     public AndyAndroidRenderer() {
-        texture = new Texture(Gdx.files
-                .classpath("640x/andyandroid-30x30.png"));
+        super(14);
+        setFrames(new Texture[]{
+            new Texture(Gdx.files.classpath("640x/android/andy-1.png")),
+            new Texture(Gdx.files.classpath("640x/android/andy-2.png")),
+            new Texture(Gdx.files.classpath("640x/android/andy-3.png")),
+            new Texture(Gdx.files.classpath("640x/android/andy-4.png"))
+        });
     }
 
     @Override
@@ -38,6 +41,9 @@ public class AndyAndroidRenderer implements EntityRenderer {
         int height = (int) (bounds.y * gUSize * r.getPPUHeight());
         Direction dir = andy.getDirection();
 
+        update();
+        Texture texture = andy.getVelocity().len() == 0 ? getFrame(1) : getFrame();
+
         switch (dir) {
             case Right:
                 batch.draw(texture, x1, y1, width, height);
@@ -48,18 +54,16 @@ public class AndyAndroidRenderer implements EntityRenderer {
                            true, false);
                 break;
             case Up:
-                batch.
-                        draw(texture, x1, y1, width / 2, height / 2, width,
-                             height, 1, 1, 90, 0, 0,
-                             texture.getWidth(), texture.getHeight(),
-                             false, false);
+                batch.draw(texture, x1, y1, width / 2, height / 2, width,
+                           height, 1, 1, 90, 0, 0,
+                           texture.getWidth(), texture.getHeight(),
+                           false, false);
                 break;
             case Down:
-                batch.
-                        draw(texture, x1, y1, width / 2, height / 2, width,
-                             height, 1, 1, -90, 0, 0,
-                             texture.getWidth(), texture.getHeight(),
-                             false, false);
+                batch.draw(texture, x1, y1, width / 2, height / 2, width,
+                           height, 1, 1, -90, 0, 0,
+                           texture.getWidth(), texture.getHeight(),
+                           false, false);
                 break;
         }
     }

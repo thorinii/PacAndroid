@@ -1,5 +1,0 @@
-package com.flipsidevirtual.pacandroid.exceptions;
-
-public class GameOverException extends GameException {
-
-}

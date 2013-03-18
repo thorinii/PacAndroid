@@ -1,5 +1,0 @@
-package com.flipsidevirtual.pacandroid.exceptions;
-
-public class GameException extends Exception {
-
-}
