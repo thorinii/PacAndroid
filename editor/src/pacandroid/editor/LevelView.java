@@ -36,21 +36,21 @@ public class LevelView extends JPanel {
         cellImages = new Image[6];
         cellImages[0] = null;
 
-        try {
-            cellImages[Grid.GRID_WALL] = ImageIO.read(getClass()
-                    .getResource("/640x/wall-32x32.png"));
-            cellImages[Grid.GRID_JELLYBEAN] = ImageIO.read(getClass()
-                    .getResource("/640x/jellybean-32x32-1.png"));
+        /*try {
+         cellImages[Grid.GRID_WALL] = ImageIO.read(getClass()
+         .getClassLoader().getResourceAsStream("/640x/wall-32x32.png"));
+         cellImages[Grid.GRID_JELLYBEAN] = ImageIO.read(getClass()
+         .getResource("/640x/jellybean-32x32-1.png"));
 
-            cellImages[Grid.GRID_ANDROID_SPAWN] = ImageIO.read(getClass()
-                    .getResource("/640x/andyandroid-30x30.png"));
-            cellImages[Grid.GRID_ENEMY_SPAWN] = null;
-            cellImages[Grid.GRID_POWERUP] = ImageIO.read(getClass()
-                    .getResource("/640x/icecream-32x32-2.png"));
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-            System.exit(1);
-        }
+         cellImages[Grid.GRID_ANDROID_SPAWN] = ImageIO.read(getClass()
+         .getResource("/640x/andyandroid-30x30.png"));
+         cellImages[Grid.GRID_ENEMY_SPAWN] = null;
+         cellImages[Grid.GRID_POWERUP] = ImageIO.read(getClass()
+         .getResource("/640x/icecream-32x32-2.png"));
+         } catch (IOException ioe) {
+         ioe.printStackTrace();
+         System.exit(1);
+         }*/
     }
 
     private void recalculateWorkingSpace() {
@@ -123,10 +123,19 @@ public class LevelView extends JPanel {
 
                 switch (cell) {
                     case Grid.GRID_WALL:
-                        colour = Color.BLACK;
+                        colour = Color.DARK_GRAY;
                         break;
                     case Grid.GRID_ENEMY_SPAWN:
                         colour = Color.RED;
+                        break;
+                    case Grid.GRID_EMPTY:
+                        colour = Color.BLACK;
+                        break;
+                    case Grid.GRID_JELLYBEAN:
+                        colour = Color.YELLOW;
+                        break;
+                    case Grid.GRID_ANDROID_SPAWN:
+                        colour = Color.GREEN;
                         break;
                     default:
                         colour = Color.WHITE;
