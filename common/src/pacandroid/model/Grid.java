@@ -1,5 +1,7 @@
 package pacandroid.model;
 
+import com.badlogic.gdx.math.Vector2;
+
 public class Grid {
 
     public static final int GRID_EMPTY = 0;
@@ -13,7 +15,7 @@ public class Grid {
         return gridSpace == GRID_WALL || gridSpace == GRID_ENEMY_SPAWN;
     }
     private int[][] wallGrid;
-    private int gridUnitSize;
+    private int unitSize;
 
     public Grid(int size, int gridUnitSize) {
         this(size, size, gridUnitSize);
@@ -21,11 +23,11 @@ public class Grid {
 
     public Grid(int width, int height, int gridUnitSize) {
         wallGrid = new int[width][height];
-        this.gridUnitSize = gridUnitSize;
+        this.unitSize = gridUnitSize;
     }
 
     public int getUnitSize() {
-        return gridUnitSize;
+        return unitSize;
     }
 
     public int getWidth() {
@@ -48,11 +50,34 @@ public class Grid {
         return wallGrid[x][y];
     }
 
-    public int getSafe(int x, int y, int def) {
+    /**
+     * Same as #get(int,int) - just casts the floats to ints.
+     */
+    public int get(float x, float y) {
+        return wallGrid[(int) x][(int) y];
+    }
+
+    /**
+     * Safe get. If (x,y) are in bounds, then returns the value, else returns
+     * <code>def</code>.
+     * <p/>
+     */
+    public int get(int x, int y, int def) {
         try {
             return get(x, y);
         } catch (ArrayIndexOutOfBoundsException aioobe) {
             return def;
         }
+    }
+
+    public Vector2 pointToGrid(Vector2 point) {
+        return new Vector2((int) (point.x / unitSize + .5f),
+                           (int) (point.y / unitSize + .5f));
+    }
+
+    public int getAt(float x, float y) {
+        return get((int) (x / unitSize + .5f),
+                   (int) (y / unitSize + .5f),
+                   Grid.GRID_EMPTY);
     }
 }

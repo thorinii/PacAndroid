@@ -27,7 +27,8 @@ public class PacAndroidGame extends Game {
 
     @Override
     public void create() {
-        mainMenu();
+        //mainMenu();
+        play();
     }
 
     @Override

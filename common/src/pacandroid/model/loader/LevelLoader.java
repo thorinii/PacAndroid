@@ -13,7 +13,7 @@ import pacandroid.model.LevelState;
 public class LevelLoader {
 
     public Level loadBuiltinLevel(int levelIndex, LevelState levelState) {
-        String levelFile = "tims-level.palvl";
+        String levelFile = "run-test.palvl";
         InputStream in;
 
         try {

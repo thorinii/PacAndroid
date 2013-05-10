@@ -16,6 +16,7 @@ import pacandroid.view.DefaultLevelRenderer;
 import pacandroid.view.LevelRenderer;
 import pacandroid.model.Level;
 import pacandroid.PacAndroidGame;
+import pacandroid.view.DebugWorldRenderer;
 
 /**
  *
@@ -106,8 +107,10 @@ public class GameScreen extends AbstractScreen {
         renderer.setSteeringController(steeringController);
 
         renderers = new LevelRenderer[]{
-            renderer
+            renderer,
+            new DebugWorldRenderer(false, level)
         };
+
     }
 
     class InputHandler implements InputProcessor {

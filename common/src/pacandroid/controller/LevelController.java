@@ -128,7 +128,7 @@ public class LevelController {
                         int[] xy = findNearestEmpty(l, i, j);
 
                         Apple entity = new Apple(g, levelState);
-                        entity.setIntelligence(Apple.AI_WANDER);
+                        entity.setIntelligence(Apple.AI_TRACK);
                         entity.setPosition(new Vector2(
                                 xy[0] * Level.GRID_UNIT_SIZE, xy[1]
                                 * Level.GRID_UNIT_SIZE));
@@ -155,7 +155,7 @@ public class LevelController {
             for (int j = 0; j < 50; j++) {
                 int space;
 
-                space = g.getSafe(x + i, y + j, Grid.GRID_WALL);
+                space = g.get(x + i, y + j, Grid.GRID_WALL);
                 if (space == Grid.GRID_EMPTY || space == Grid.GRID_JELLYBEAN) {
                     xy[0] = x + i;
                     xy[1] = y + j;
@@ -163,7 +163,7 @@ public class LevelController {
                 }
 
 
-                space = g.getSafe(x - i, y + j, Grid.GRID_WALL);
+                space = g.get(x - i, y + j, Grid.GRID_WALL);
                 if (space == Grid.GRID_EMPTY || space == Grid.GRID_JELLYBEAN) {
                     xy[0] = x - i;
                     xy[1] = y + j;
@@ -171,7 +171,7 @@ public class LevelController {
                 }
 
 
-                space = g.getSafe(x + i, y - j, Grid.GRID_WALL);
+                space = g.get(x + i, y - j, Grid.GRID_WALL);
                 if (space == Grid.GRID_EMPTY || space == Grid.GRID_JELLYBEAN) {
                     xy[0] = x + i;
                     xy[1] = y - j;
@@ -179,7 +179,7 @@ public class LevelController {
                 }
 
 
-                space = g.getSafe(x - i, y - j, Grid.GRID_WALL);
+                space = g.get(x - i, y - j, Grid.GRID_WALL);
                 if (space == Grid.GRID_EMPTY || space == Grid.GRID_JELLYBEAN) {
                     xy[0] = x - i;
                     xy[1] = y - j;

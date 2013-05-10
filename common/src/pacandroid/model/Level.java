@@ -19,7 +19,7 @@ public class Level {
     public Level() {
         entities = new ArrayList<Entity>();
         wallGrid = new Grid(Level.GRID_WIDTH, Level.GRID_HEIGHT, GRID_UNIT_SIZE);
-        maxEnemies = 4;
+        maxEnemies = 1;
     }
 
     public void spawnEntity(Entity entity) {

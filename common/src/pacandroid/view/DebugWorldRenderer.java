@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import pacandroid.model.Apple;
 import pacandroid.model.Entity;
 import pacandroid.model.Grid;
 import pacandroid.model.Level;
@@ -47,8 +48,8 @@ public class DebugWorldRenderer implements LevelRenderer {
     public void render(float delta) {
         debugRenderer.setProjectionMatrix(cam.combined);
 
+        Grid grid = world.getGrid();
         if (renderWalls) {
-            Grid grid = world.getGrid();
             int gUSize = grid.getUnitSize();
             int gHUSize = grid.getUnitSize() / 2;
 
@@ -103,9 +104,59 @@ public class DebugWorldRenderer implements LevelRenderer {
             float y1 = entity.getPosition().y;
 
             debugRenderer.setColor(posColour);
-            debugRenderer.line(x1 - 2, y1, x1 + 2, y1);
-            debugRenderer.line(x1, y1 - 2, x1, y1 + 2);
+            drawPoint(entity.getPosition());
+
+            if (entity instanceof Apple) {
+                Apple apple = (Apple) entity;
+
+                debugRenderer.setColor(Color.GREEN);
+                drawVector(apple.getPosition(), apple.getSteering());
+
+                debugRenderer.setColor(Color.YELLOW);
+                drawVector(apple.getPosition(), apple.getVelocity());
+            }
+
+            drawPoint(x1 - entity.getBounds().x / 2,
+                      y1 - entity.getBounds().y / 2, grid);
+            drawPoint(x1 - entity.getBounds().x / 2,
+                      y1 + entity.getBounds().y / 2, grid);
+            drawPoint(x1 + entity.getBounds().x / 2,
+                      y1 - entity.getBounds().y / 2, grid);
+            drawPoint(x1 + entity.getBounds().x / 2,
+                      y1 + entity.getBounds().y / 2, grid);
+
+            drawPoint(x1 - entity.getBounds().x / 2,
+                      y1, grid);
+            drawPoint(x1,
+                      y1 + entity.getBounds().y / 2, grid);
+            drawPoint(x1 + entity.getBounds().x / 2,
+                      y1, grid);
+            drawPoint(x1,
+                      y1 - entity.getBounds().y / 2, grid);
         }
         debugRenderer.end();
+    }
+
+    private void drawPoint(Vector2 point) {
+        drawPoint(point.x, point.y);
+    }
+
+    private void drawPoint(float x, float y) {
+        debugRenderer.line(x, y - 0.3f, x, y + 0.3f);
+        debugRenderer.line(x - 0.3f, y, x + 0.3f, y);
+    }
+
+    private void drawPoint(float x, float y, Grid grid) {
+        debugRenderer.setColor(Grid.isWall(grid.getAt(x, y))
+                               ? Color.RED : Color.BLUE);
+        drawPoint(x, y);
+        drawPoint(grid.pointToGrid(new Vector2(x, y)));
+    }
+
+    private void drawVector(Vector2 base, Vector2 vec) {
+        vec = vec.cpy().nor().mul(2);
+        debugRenderer.line(base.x, base.y,
+                           vec.x + base.x,
+                           vec.y + base.y);
     }
 }

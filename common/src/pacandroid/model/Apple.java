@@ -10,22 +10,24 @@ import java.util.Set;
 import com.badlogic.gdx.math.Vector2;
 import pacandroid.model.LevelState.Powerup;
 
-public class Apple extends GridLockedDynamicEntity {
+public class Apple extends DynamicEntity {
 
-    public static final int AI_WANDER = 0;
-    public static final int AI_TRACK = 1;
-    public static final int AI_PATHFIND = 2;
+    public static final int AI_TRACK = 0;
+    public static final int AI_PATHFIND = 1;
     public static final float CHASE_SPEED = 9f;
     public static final float WANDER_SPEED = 9f;
     public static final int TICKS_IN_STATE = 4;
     private final float SPEED_COEFFICIENT;
+    private final Grid grid;
     private Level level;
     private int ticks;
     private final LevelState levelState;
     private AppleAI intelligence;
+    private Vector2 steering = new Vector2();
 
     public Apple(Grid grid, LevelState levelState) {
-        super(new Vector2(1.875f, 1.875f), grid);
+        super(new Vector2(1.5f, 1.5f));
+        this.grid = grid;
         this.levelState = levelState;
 
         SPEED_COEFFICIENT = (float) Math.max(Math.random(), .7);
@@ -35,15 +37,13 @@ public class Apple extends GridLockedDynamicEntity {
 
     public void setIntelligence(int intelligence) {
         switch (intelligence) {
-            case AI_WANDER:
-                this.intelligence = new AppleWanderAI();
-                break;
             case AI_TRACK:
+            default:
                 this.intelligence = new AppleTrackingAI();
                 break;
-            case AI_PATHFIND:
-                this.intelligence = new ApplePathFindingAI();
-                break;
+            //case AI_PATHFIND:
+            //    this.intelligence = new ApplePathFindingAI();
+            //    break;
         }
     }
 
@@ -55,32 +55,39 @@ public class Apple extends GridLockedDynamicEntity {
         return level;
     }
 
-    @Override
-    protected boolean handleGridSpace(int x, int y, int gridSpace) {
-        return false;
+    public Grid getGrid() {
+        return grid;
+    }
+
+    public Vector2 getSteering() {
+        return steering;
     }
 
     @Override
     public void update(float timestep) {
         super.update(timestep);
 
-        if (levelState.getCurrentPowerup() == Powerup.Edible) {
-            Vector2 andy = level.getAndyAndroid().getPosition();
-            Vector2 me = getPosition();
-            Vector2 velocity = new Vector2();
+        getPosition().x += 0.001f;
+        getPosition().y += 0.001f;
 
-            float dx, dy;
-            dx = me.x - andy.x;
-            dy = me.y - andy.y;
-
-            velocity.x = Math.min(dx, CHASE_SPEED);
-            velocity.y = Math.min(dy, CHASE_SPEED);
-
-            if (dx == 0)
-                velocity.x = -CHASE_SPEED;
-            if (dy == 0)
-                velocity.y = -CHASE_SPEED;
-        } else if (levelState.getCurrentPowerup() == Powerup.KillAll) {
+//        if (levelState.getCurrentPowerup() == Powerup.Edible) {
+//            Vector2 andy = level.getAndyAndroid().getPosition();
+//            Vector2 me = getPosition();
+//            Vector2 velocity = new Vector2();
+//
+//            float dx, dy;
+//            dx = me.x - andy.x;
+//            dy = me.y - andy.y;
+//
+//            velocity.x = Math.min(dx, CHASE_SPEED);
+//            velocity.y = Math.min(dy, CHASE_SPEED);
+//
+//            if (dx == 0)
+//                velocity.x = -CHASE_SPEED;
+//            if (dy == 0)
+//                velocity.y = -CHASE_SPEED;
+//        } else
+        if (levelState.getCurrentPowerup() == Powerup.KillAll) {
             markForKill();
         } else {
             intelligence.update(getVelocity(), ticks);
@@ -94,102 +101,111 @@ public class Apple extends GridLockedDynamicEntity {
         public abstract void update(Vector2 vel, int ticks);
     }
 
-    private class AppleWanderAI extends AppleAI {
-
-        @Override
-        public void update(Vector2 vel, int ticks) {
-            wander(vel, ticks);
-        }
-
-        private void wander(Vector2 oldVel, int ticks) {
-            if (ticks % 10 == 0) {
-                Vector2 velocity = new Vector2();
-
-                velocity.x = WANDER_SPEED * SPEED_COEFFICIENT
-                        * (float) (Math.random() - 0.5f);
-
-                velocity.y = WANDER_SPEED * SPEED_COEFFICIENT
-                        * (float) (Math.random() - 0.5f);
-
-
-                if ((oldVel.x < 0 && velocity.x > 0) || (oldVel.x > 0
-                        && velocity.x < 0))
-                    velocity.x = -velocity.x;
-                if ((oldVel.y < 0
-                        && velocity.y > 0) || (oldVel.y > 0 && velocity.y < 0))
-                    velocity.y = -velocity.y;
-
-                setVelocity(velocity);
-            }
-        }
-    }
-
     private class AppleTrackingAI extends AppleAI {
 
         @Override
         public void update(Vector2 vel, int ticks) {
-            if (ticks % (int) (Math.random() * 2 * TICKS_IN_STATE + 1) < TICKS_IN_STATE)
-                wander(vel, ticks);
-            else
-                chase(ticks);
-        }
-
-        private void wander(Vector2 oldVel, int ticks) {
-            if (ticks % 5 == 0) {
-                Vector2 velocity = new Vector2();
-
-                velocity.x = (float) Math
-                        .copySign(WANDER_SPEED * SPEED_COEFFICIENT,
-                                  Math.random() - 0.5);
-
-                velocity.y = (float) Math
-                        .copySign(WANDER_SPEED * SPEED_COEFFICIENT,
-                                  Math.random() - 0.5);
-
-                if (oldVel.x < 0 && velocity.x > 0)
-                    velocity.x *= -1;
-                else if (oldVel.x > 0 && velocity.x < 0)
-                    velocity.x *= -1;
-                if (oldVel.y < 0 && velocity.y > 0)
-                    velocity.y *= -1;
-                else if (oldVel.y > 0 && velocity.y < 0)
-                    velocity.y *= -1;
-
-                setVelocity(velocity);
-            }
-        }
-
-        private void chase(int ticks) {
             Vector2 andy = level.getAndyAndroid().getPosition();
             Vector2 me = getPosition();
-            Vector2 velocity = new Vector2();
+            steering = new Vector2();
 
-            float dx, dy;
+            //steering.add(wallRepel(getGrid(), me));
 
-            if (levelState.getCurrentPowerup() == LevelState.Powerup.Edible) {
-                // Flee
-                dx = me.x - andy.x;
-                dy = me.y - andy.y;
-            } else {
-                // Chase
-                dx = andy.x - me.x;
-                dy = andy.y - me.y;
+//            if (levelState.getCurrentPowerup() == LevelState.Powerup.Edible) {
+//                // Flee
+//                Vector2 desired = andy.cpy().sub(me).nor();
+//                steering.sub(desired.sub(vel));
+//            } else {
+            // Chase
+            Vector2 desired = andy.cpy().sub(me).nor().mul(CHASE_SPEED);
+            steering.add(desired.sub(vel));
+//            }
+
+            steering.nor();
+            if (steering.len() > 2)
+                steering.nor().mul(2);
+
+            vel.add(steering);
+
+            if (vel.len() > CHASE_SPEED)
+                vel.nor().mul(CHASE_SPEED);
+
+            wallBounce(grid, me, vel);
+            setVelocity(vel);
+        }
+
+        private void wallBounce(Grid grid, Vector2 me, Vector2 vel) {
+            Vector2 m1, m2;
+            m1 = me.cpy().sub(getBounds().cpy().mul(.5f)).mul(1f / grid.getUnitSize()).add(.5f, .5f);
+            m2 = me.cpy().add(getBounds().cpy().mul(.5f)).mul(1f / grid.getUnitSize()).add(.5f, .5f);
+
+            Vector2 g1, g2;
+            g1 = m1.cpy();
+            g1.x = (int) g1.x;
+            g1.y = (int) g1.y;
+
+            g2 = g1.cpy().add(1f, 1f);
+
+
+            /*
+             * G12 ------------ G22
+             *  |                |
+             *  |                |
+             *  |                |
+             *  |                |
+             * G11 ------------ G21
+             */
+
+            // G11
+            if (Grid.isWall(grid.get(g1.x, g1.y))) {
+                Vector2 penetration = collideAABB(m1, m2, g1, g2);
+                me.sub(penetration);
             }
 
-            if (Math.abs(dx) > Math.abs(dy)) {
-                velocity.x = Math.copySign(CHASE_SPEED * SPEED_COEFFICIENT,
-                                           dx);
-                velocity.y = 0;
-
-                setVelocity(velocity);
-            } else {
-                velocity.x = 0;
-                velocity.y = Math.copySign(CHASE_SPEED * SPEED_COEFFICIENT,
-                                           dy);
-
-                setVelocity(velocity);
+            // G12
+            if (Grid.isWall(grid.get(g1.x, g2.y))) {
+                Vector2 penetration = collideAABB(m1, m2,
+                                                  new Vector2(g1.x, g1.y + 1),
+                                                  new Vector2(g2.x, g2.y + 1));
+                me.sub(penetration);
             }
 
+            // G21
+            if (Grid.isWall(grid.get(g2.x, g1.y))) {
+                Vector2 penetration = collideAABB(m1, m2,
+                                                  new Vector2(g1.x + 1, g1.y),
+                                                  new Vector2(g2.x + 1, g2.y));
+                me.sub(penetration);
+            }
+
+            // G22
+            if (Grid.isWall(grid.get(g2.x, g2.y))) {
+                Vector2 penetration = collideAABB(m1, m2,
+                                                  new Vector2(g1.x + 1, g1.y + 1),
+                                                  new Vector2(g2.x + 1, g2.y + 1));
+                me.sub(penetration);
+            }
+        }
+
+        private Vector2 collideAABB(Vector2 m1, Vector2 m2, Vector2 g1, Vector2 g2) {
+            Vector2 mc = new Vector2((m1.x + m2.x) / 2, (m1.y + m2.y) / 2);
+            Vector2 gc = new Vector2((g1.x + g2.x) / 2, (g1.y + g2.y) / 2);
+
+            Vector2 t = gc.cpy().sub(mc);
+
+            float aXExtent = (m2.x - m1.x) / 2;
+            float bXExtent = (g2.x - g1.x) / 2;
+            float xOverlap = aXExtent + bXExtent - Math.abs(t.x);
+
+            float aYExtent = (m2.y - m1.y) / 2;
+            float bYExtent = (g2.y - g1.y) / 2;
+            float yOverlap = aYExtent + bYExtent - Math.abs(t.y);
+
+            if (xOverlap < yOverlap) {
+                return new Vector2((t.x < 0) ? -Math.max(0, xOverlap) : Math.max(0, xOverlap), 0);
+            } else {
+                return new Vector2(0, (t.y < 0) ? -Math.max(0, yOverlap) : Math.max(0, yOverlap));
+            }
         }
     }
 

@@ -25,7 +25,7 @@ public class MainMenuScreen extends AbstractScreen {
 
         gui = new GUI(800, 600);
         gui.setBackground(new Texture(Gdx.files.classpath(
-                "buttons/background.png")));
+                "gui/background.png")));
 
         Texture playUp, playDown;
         playUp = new Texture(Gdx.files.classpath("gui/play-up.png"));
