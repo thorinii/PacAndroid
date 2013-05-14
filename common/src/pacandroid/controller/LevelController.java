@@ -128,7 +128,7 @@ public class LevelController {
                         int[] xy = findNearestEmpty(l, i, j);
 
                         Apple entity = new Apple(g, levelState);
-                        entity.setIntelligence(Apple.AI_TRACK);
+                        entity.setIntelligence(Apple.AI_PATHFIND);
                         entity.setPosition(new Vector2(
                                 xy[0] * Level.GRID_UNIT_SIZE, xy[1]
                                 * Level.GRID_UNIT_SIZE));

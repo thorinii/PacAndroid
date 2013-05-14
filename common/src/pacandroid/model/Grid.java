@@ -70,6 +70,19 @@ public class Grid {
         }
     }
 
+    /**
+     * Safe get. If (x,y) are in bounds, then returns the value, else returns
+     * <code>def</code>.
+     * <p/>
+     */
+    public int get(float x, float y, int def) {
+        try {
+            return get(x, y);
+        } catch (ArrayIndexOutOfBoundsException aioobe) {
+            return def;
+        }
+    }
+
     public Vector2 pointToGrid(Vector2 point) {
         return new Vector2((int) (point.x / unitSize + .5f),
                            (int) (point.y / unitSize + .5f));

@@ -108,7 +108,7 @@ public class GameScreen extends AbstractScreen {
 
         renderers = new LevelRenderer[]{
             renderer,
-            new DebugWorldRenderer(false, level)
+            //new DebugWorldRenderer(false, level)
         };
 
     }
