@@ -19,6 +19,7 @@ public class Apple extends DynamicEntity {
     private int ticks;
     private final LevelState levelState;
     private AppleAI intelligence;
+    private Vector2 desired = new Vector2();
     private Vector2 steering = new Vector2();
 
     public Apple(Grid grid, LevelState levelState) {
@@ -53,6 +54,10 @@ public class Apple extends DynamicEntity {
         return grid;
     }
 
+    public Vector2 getDesired() {
+        return desired;
+    }
+
     public Vector2 getSteering() {
         return steering;
     }
@@ -76,6 +81,9 @@ public class Apple extends DynamicEntity {
 
         wallBounce(grid, me, vel);
 
+        vel.mul(.97f);
+        vel.add((float)Math.random()-0.5f, (float)Math.random()-0.5f);
+        
         if (vel.len() > CHASE_SPEED)
             vel.nor().mul(CHASE_SPEED);
 
@@ -152,6 +160,12 @@ public class Apple extends DynamicEntity {
             vel.y += penetration.y * COLLISION_RESPONSE;
     }
 
+    public Path getPath() {
+        if (intelligence instanceof ApplePathFindingAI)
+            return ((ApplePathFindingAI) intelligence).path;
+        return null;
+    }
+
     private abstract class AppleAI {
 
         public abstract Vector2 getSteering(Vector2 vel, int ticks);
@@ -173,8 +187,8 @@ public class Apple extends DynamicEntity {
 //                steering.sub(desired.sub(vel));
 //            } else {
             // Chase
-            Vector2 desired = andy.cpy().sub(me).nor().mul(CHASE_SPEED);
-            steering.add(desired.sub(vel));
+            desired = andy.cpy().sub(me).nor().mul(CHASE_SPEED);
+            steering.add(desired.cpy().sub(vel));
 //            }
 
             steering.nor();
@@ -188,6 +202,7 @@ public class Apple extends DynamicEntity {
     private class ApplePathFindingAI extends AppleAI {
 
         private PathFinder pathFinder;
+        private Path path;
 
         public ApplePathFindingAI() {
             pathFinder = new PathFinder(grid);
@@ -202,37 +217,45 @@ public class Apple extends DynamicEntity {
             Vector2 andyGrid = grid.pointToGrid(andy);
 
             steering = new Vector2();
-            Vector2 dest = null;
 
-            Node start = new Node((int) meGrid.x, (int) meGrid.y);
-            Node end = new Node((int) andyGrid.x, (int) andyGrid.y);
-
-            Path path = pathFinder.getPath(start, end);
-
-            float dx, dy;
-            for (int i = 0; i < path.size(); i++) {
-                dest = path.get(i).toVector2(grid);
-                dx = dest.x - me.x;
-                dy = dest.y - me.y;
-
-                if (i == 0)
-                    continue;
-                if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
-                    break;
-                }
+            if (path == null || ticks % 10 == 0) {
+                Node start = new Node((int) meGrid.x, (int) meGrid.y);
+                Node end = new Node((int) andyGrid.x, (int) andyGrid.y);
+                path = pathFinder.getPath(start, end);
             }
 
+            Vector2 dest = null;
+            float dx, dy;
+            for (int i = 0; i < path.size(); i++) {
+                dest = path.get(i).toVector2(grid).add(1, 1);
+                dx = dest.x - me.x;
+                dy = dest.y - me.y;
+                float d = (float) Math.sqrt(dx * dx + dy * dy);
+
+                // if the first node (usually on top of us) is too far away, use it
+                if (i == 0)
+                    if (d > 10f)
+                        break;
+                    else
+                        continue;
+
+                // if the current node is not too close, use it
+                if (d > 0.1f)
+                    break;
+            }
             if (dest == null) {
-                steering.add(andy.cpy().sub(me).nor().mul(CHASE_SPEED).sub(vel));
-                System.out.println("Broken");
+                desired = andy.cpy().sub(me).nor().mul(CHASE_SPEED);
+                steering.add(desired.cpy().sub(vel));
             } else {
-                Vector2 desired = dest.sub(me).nor().mul(CHASE_SPEED);
-                steering.add(desired.sub(vel));
+                desired = dest.sub(me).nor().mul(CHASE_SPEED);
+                steering.add(desired.cpy().sub(vel));
             }
 
             steering.nor();
-            if (steering.len() > 0.5f)
-                steering.nor().mul(0.5f);
+
+            if (steering.len()
+                    > 0.8f)
+                steering.nor().mul(0.8f);
 
             return steering;
         }

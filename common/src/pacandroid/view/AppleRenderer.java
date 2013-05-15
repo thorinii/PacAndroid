@@ -3,12 +3,9 @@ package pacandroid.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import pacandroid.model.Apple;
-import pacandroid.model.Direction;
 import pacandroid.model.Entity;
-import pacandroid.model.GridLockedDynamicEntity;
 
 public class AppleRenderer implements EntityRenderer {
 
@@ -27,7 +24,6 @@ public class AppleRenderer implements EntityRenderer {
 
         Apple apple = (Apple) entity;
 
-        Vector2 bounds = entity.getBounds();
         float x1 = (entity.getPosition().x) * r.getPPUWidth()
                 + r.getOffsetX();
         float y1 = (entity.getPosition().y) * r.getPPUHeight()
@@ -35,33 +31,17 @@ public class AppleRenderer implements EntityRenderer {
 
         float gUSize = .5f * apple.getGrid().getUnitSize();
 
-        int width = (int) (bounds.x * gUSize * r.getPPUWidth());
-        int height = (int) (bounds.y * gUSize * r.getPPUHeight());
-        Direction dir = apple.getDirection();
+        x1 += 0.15f * gUSize * r.getPPUHeight();
+        y1 += 0.15f * gUSize * r.getPPUHeight();
 
-        switch (dir) {
-            case Right:
-                batch.draw(texture, x1, y1, width, height);
-                break;
-            case Left:
-                batch.draw(texture, x1, y1, width, height, 0, 0,
-                           texture.getWidth(), texture.getHeight(),
-                           true, false);
-                break;
-            case Up:
-                batch.
-                        draw(texture, x1, y1, width / 2, height / 2, width,
-                             height, 1, 1, 90, 0, 0,
-                             texture.getWidth(), texture.getHeight(),
-                             false, false);
-                break;
-            case Down:
-                batch.
-                        draw(texture, x1, y1, width / 2, height / 2, width,
-                             height, 1, 1, -90, 0, 0,
-                             texture.getWidth(), texture.getHeight(),
-                             false, false);
-                break;
-        }
+        int width = (int) (1.5 * gUSize * r.getPPUWidth());
+        int height = (int) (1.5 * gUSize * r.getPPUHeight());
+        Vector2 direction = apple.getDesired();
+
+
+        batch.draw(texture, x1, y1, width / 2, height / 2, width,
+                   height, 1, 1, direction.angle(), 0, 0,
+                   texture.getWidth(), texture.getHeight(),
+                   false, false);
     }
 }

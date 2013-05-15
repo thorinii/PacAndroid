@@ -107,8 +107,7 @@ public class GameScreen extends AbstractScreen {
         renderer.setSteeringController(steeringController);
 
         renderers = new LevelRenderer[]{
-            renderer,
-            //new DebugWorldRenderer(false, level)
+            renderer, //new DebugWorldRenderer(false, level)
         };
 
     }

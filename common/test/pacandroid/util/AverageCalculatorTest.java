@@ -62,11 +62,11 @@ public class AverageCalculatorTest {
         calc.addSample(5);
         calc.addSample(7);
         calc.addSample(9);
-        
+
         calc.addSample(11);
         calc.addSample(13);
         calc.addSample(15);
-        
+
         calc.addSample(17);
 
         assertEquals(15, calc.getAverage(), 0);

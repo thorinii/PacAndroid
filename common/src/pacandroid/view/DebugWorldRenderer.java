@@ -9,6 +9,7 @@ import pacandroid.model.Apple;
 import pacandroid.model.Entity;
 import pacandroid.model.Grid;
 import pacandroid.model.Level;
+import pacandroid.model.PathFinder.Node;
 
 public class DebugWorldRenderer implements LevelRenderer {
 
@@ -114,25 +115,46 @@ public class DebugWorldRenderer implements LevelRenderer {
 
                 debugRenderer.setColor(Color.YELLOW);
                 drawVector(apple.getPosition(), apple.getVelocity());
+
+                debugRenderer.setColor(Color.RED);
+                drawVector(apple.getPosition(), apple.getDesired());
+
+                Grid g = apple.getGrid();
+                if (apple.getPath() != null) {
+                    Vector2 pv = null;
+                    for (Node n : apple.getPath()) {
+                        Vector2 nv = new Vector2(n.x * g.getUnitSize(), n.y * g.getUnitSize());
+
+                        debugRenderer.setColor(Color.GREEN);
+                        //drawPoint(nv);
+
+                        if (pv != null) {
+                            debugRenderer.setColor(Color.MAGENTA);
+                            debugRenderer.line(pv.x, pv.y, nv.x, nv.y);
+                        }
+
+                        pv = nv;
+                    }
+                }
             }
 
-            drawPoint(x1 - entity.getBounds().x / 2,
-                      y1 - entity.getBounds().y / 2, grid);
-            drawPoint(x1 - entity.getBounds().x / 2,
-                      y1 + entity.getBounds().y / 2, grid);
-            drawPoint(x1 + entity.getBounds().x / 2,
-                      y1 - entity.getBounds().y / 2, grid);
-            drawPoint(x1 + entity.getBounds().x / 2,
-                      y1 + entity.getBounds().y / 2, grid);
+            /*drawPoint(x1 - entity.getBounds().x / 2,
+             y1 - entity.getBounds().y / 2, grid);
+             drawPoint(x1 - entity.getBounds().x / 2,
+             y1 + entity.getBounds().y / 2, grid);
+             drawPoint(x1 + entity.getBounds().x / 2,
+             y1 - entity.getBounds().y / 2, grid);
+             drawPoint(x1 + entity.getBounds().x / 2,
+             y1 + entity.getBounds().y / 2, grid);
 
-            drawPoint(x1 - entity.getBounds().x / 2,
-                      y1, grid);
-            drawPoint(x1,
-                      y1 + entity.getBounds().y / 2, grid);
-            drawPoint(x1 + entity.getBounds().x / 2,
-                      y1, grid);
-            drawPoint(x1,
-                      y1 - entity.getBounds().y / 2, grid);
+             drawPoint(x1 - entity.getBounds().x / 2,
+             y1, grid);
+             drawPoint(x1,
+             y1 + entity.getBounds().y / 2, grid);
+             drawPoint(x1 + entity.getBounds().x / 2,
+             y1, grid);
+             drawPoint(x1,
+             y1 - entity.getBounds().y / 2, grid);*/
         }
         debugRenderer.end();
     }

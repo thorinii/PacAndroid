@@ -123,15 +123,14 @@ public class LevelController {
         if (l.getEntitiesByType(Apple.class).size() < l.getMaxEnemies()) {
             for (int i = 0; i < g.getWidth(); i++) {
                 for (int j = 0; j < g.getHeight(); j++) {
-                    if (g.get(i, j) == Grid.GRID_ENEMY_SPAWN
-                            && randomTime(50)) {
+                    if (g.get(i, j) == Grid.GRID_ENEMY_SPAWN && randomTime(50)) {
                         int[] xy = findNearestEmpty(l, i, j);
 
                         Apple entity = new Apple(g, levelState);
                         entity.setIntelligence(Apple.AI_PATHFIND);
                         entity.setPosition(new Vector2(
-                                xy[0] * Level.GRID_UNIT_SIZE, xy[1]
-                                * Level.GRID_UNIT_SIZE));
+                                xy[0] * Level.GRID_UNIT_SIZE,
+                                xy[1] * Level.GRID_UNIT_SIZE));
 
                         l.spawnEntity(entity);
 
