@@ -24,6 +24,8 @@ public class DefaultLevelRenderer implements LevelRenderer {
 
     private static final double SCREEN_RATIO = 5.0 / 8.0;
     private static final float FADE_TIME = 1.5f;
+    private static int POWERUP_ICON_TEXT_X = 472;
+    private static int POWERUP_ICON_TEXT_Y = 62;
     //
     private final OrthographicCamera cam;
     private final SpriteBatch spriteBatch;
@@ -39,7 +41,8 @@ public class DefaultLevelRenderer implements LevelRenderer {
     private Texture scoreIconTexture;
     private Texture lifeIconTexture;
     private Texture[] jellybeanTextures;
-    private Texture[] powerupTextures;
+    private Texture[] powerupGridTextures;
+    private Texture[] powerupIconTextures;
     //
     private final float width, height;
     private float offsetX, offsetY;
@@ -101,11 +104,17 @@ public class DefaultLevelRenderer implements LevelRenderer {
                     .classpath("640x/jellybean-32x32-" + (i + 1) + ".png"));
         }
 
-        powerupTextures = new Texture[5];
-        for (int i = 0; i < powerupTextures.length; i++) {
-            powerupTextures[i] = new Texture(Gdx.files
+        powerupGridTextures = new Texture[5];
+        for (int i = 0; i < powerupGridTextures.length; i++) {
+            powerupGridTextures[i] = new Texture(Gdx.files
                     .classpath("640x/icecream-32x32-" + (i + 1) + ".png"));
         }
+
+        powerupIconTextures = new Texture[5];
+        powerupIconTextures[Powerup.DoubleScore.ordinal()] = new Texture(Gdx.files
+                .classpath("powerup/double-score.jpg"));
+        powerupIconTextures[Powerup.Edible.ordinal()] = new Texture(Gdx.files
+                .classpath("powerup/edible.jpg"));
 
         fontRenderer = new FontRenderer();
         fontRenderer.setFont("BenderSolid");
@@ -152,6 +161,7 @@ public class DefaultLevelRenderer implements LevelRenderer {
             drawScores();
         }
 
+        drawPowerups();
         drawMessages();
 
         spriteBatch.end();
@@ -179,9 +189,9 @@ public class DefaultLevelRenderer implements LevelRenderer {
                                      xLoc, yLoc,
                                      ppuW * gUSize, ppuH * gUSize);
                 } else if (gridSpace == Grid.GRID_POWERUP) {
-                    spriteBatch.draw(powerupTextures[
+                    spriteBatch.draw(powerupGridTextures[
                                      hash(i, j,
-                                                          powerupTextures.length)],
+                                                              powerupGridTextures.length)],
                                      xLoc, yLoc,
                                      ppuW * gUSize, ppuH * gUSize);
                 }
@@ -210,9 +220,45 @@ public class DefaultLevelRenderer implements LevelRenderer {
         fontRenderer.drawString(levelState.getScore().toString(), spriteBatch,
                                 (int) offsetX + 60, (int) offsetY + graphicY);
 
-        for (int i = 0; i < levelState.getLives(); i++)
+        for (int i = 0; i < Math.min(5, levelState.getLives()); i++)
             spriteBatch.draw(lifeIconTexture, offsetX + 100 + i * 42, offsetY
                     + graphicY + 40);
+    }
+
+    private void drawPowerups() {
+        int graphicY = 710;
+
+        Powerup powerup = levelState.getCurrentPowerup();
+        float showTime;
+
+        // Check for a new powerup... just make sure its not Null
+        if (powerup != currentPowerup && powerup != Powerup.Null) {
+            currentPowerup = powerup;
+            showTime = Math.max(2f, powerup.buffMillis / 1000f);
+
+            powerupShowTimer = Timers.getSingleTimer(showTime);
+        }
+
+        if (powerupShowTimer != null) {
+            if (currentPowerup.isHuman() && powerupShowTimer.beforeTick()) {
+                fontRenderer.setColor(Color.WHITE);
+                fontRenderer.drawStringCentred(currentPowerup.name,
+                                               spriteBatch,
+                                               (int) width / 2,
+                                               (int) height / 2);
+
+                int icon = currentPowerup.ordinal();
+
+                fontRenderer.setColor(Color.RED);
+                fontRenderer.drawString(currentPowerup.name, spriteBatch,
+                                        (int) offsetX + POWERUP_ICON_TEXT_X,
+                                        (int) offsetY + graphicY + POWERUP_ICON_TEXT_Y);
+
+                if (powerupIconTextures[icon] != null)
+                    spriteBatch.draw(powerupIconTextures[icon], offsetX + 400, offsetY + graphicY + 20);
+
+            }
+        }
     }
 
     private void drawMessages() {
@@ -229,48 +275,6 @@ public class DefaultLevelRenderer implements LevelRenderer {
                                            spriteBatch,
                                            (int) width / 2,
                                            (int) height / 2);
-        } else {
-            Powerup powerup = levelState.getCurrentPowerup();
-            float showTime;
-
-            // Check for a new powerup... just make sure its not Null
-            if (powerup != currentPowerup && powerup != Powerup.Null) {
-                currentPowerup = powerup;
-                showTime = Math.max(0.2f, powerup.buffMillis / 1000f);
-
-                powerupShowTimer = Timers.getSingleTimer(showTime);
-            } else {
-                showTime = Math.max(0.2f, currentPowerup.buffMillis / 1000f);
-            }
-
-            if (powerupShowTimer != null) {
-                // We don't want to tell everyone the level is frozen at the start
-                if (!currentPowerup.isHuman())
-                    return;
-
-                if (powerupShowTimer.beforeTick()) {
-                    fontRenderer.setColor(Color.WHITE);
-                    fontRenderer.drawStringCentred(currentPowerup.name,
-                                                   spriteBatch,
-                                                   (int) width / 2,
-                                                   (int) height / 2);
-                } else {
-                    float fadeTime = powerupShowTimer.getTime() - showTime;
-                    float fade = Math.max(0, (FADE_TIME - fadeTime) / FADE_TIME);
-
-                    fontRenderer.setColor(new Color(1, 1, 1, fade));
-                    fontRenderer.drawStringCentred(currentPowerup.name,
-                                                   spriteBatch,
-                                                   (int) width / 2,
-                                                   (int) height / 2);
-                    fontRenderer.setColor(Color.WHITE);
-
-                    if (fade == 0) {
-                        currentPowerup = powerup;
-                        powerupShowTimer = null;
-                    }
-                }
-            }
         }
     }
 
