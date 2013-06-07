@@ -37,6 +37,8 @@ public class PathFinder {
 
         while (true) {
             Node curr = getNext(open, end);
+            if (curr == null)
+                break;
             if (curr.equals(end))
                 break;
 

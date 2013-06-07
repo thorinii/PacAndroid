@@ -1,11 +1,13 @@
 package pacandroid.model;
 
 import com.badlogic.gdx.math.Vector2;
+import me.lachlanap.lct.Constant;
 import pacandroid.model.LevelState.Powerup;
 
 public class AndyAndroid extends GridLockedDynamicEntity {
 
-    public static final float REGULAR_SPEED = 15f;
+    @Constant(name = "Regular Speed", constraints = "0,")
+    public static float REGULAR_SPEED = 15f;
     private final LevelState levelState;
 
     public AndyAndroid(Grid grid, LevelState levelState) {

@@ -3,23 +3,26 @@ package pacandroid.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import me.lachlanap.lct.Constant;
 
 public class Level {
 
     public static final int GRID_UNIT_SIZE = 2;
     public static final int GRID_HEIGHT = 15;
     public static final int GRID_WIDTH = 24;
+    @Constant(name = "Max Enemies", constraints = "0,")
+    public static int MAX_ENEMIES = 1;
     private final List<Entity> entities;
     private final Grid wallGrid;
     private AndyAndroid andyAndroid;
     private int maxEnemies;
     private int enemyAI;
-    private int enemeSpeed;
+    private int enemySpeed;
 
     public Level() {
         entities = new ArrayList<Entity>();
         wallGrid = new Grid(Level.GRID_WIDTH, Level.GRID_HEIGHT, GRID_UNIT_SIZE);
-        maxEnemies = 1;
+        maxEnemies = MAX_ENEMIES;
     }
 
     public void spawnEntity(Entity entity) {
@@ -71,7 +74,7 @@ public class Level {
     }
 
     public int getMaxEnemies() {
-        return maxEnemies;
+        return MAX_ENEMIES;
     }
 
     public void setMaxEnemies(int maxEnemies) {

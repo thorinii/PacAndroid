@@ -1,6 +1,7 @@
 package pacandroid.model;
 
 import com.badlogic.gdx.math.Vector2;
+import me.lachlanap.lct.Constant;
 import pacandroid.model.LevelState.Powerup;
 import pacandroid.model.PathFinder.Node;
 import pacandroid.model.PathFinder.Path;
@@ -10,10 +11,14 @@ public class Apple extends DynamicEntity {
 
     public static final int AI_TRACK = 0;
     public static final int AI_PATHFIND = 1;
-    public static final float CHASE_SPEED = 15f;
-    public static final float WANDER_SPEED = 9f;
-    public static final int TICKS_IN_STATE = 4;
+    @Constant(name = "Chase Speed", constraints = "")
+    public static float CHASE_SPEED = 15f;
+    @Constant(name = "Wander Speed", constraints = "0,")
+    public static float WANDER_SPEED = 9f;
+    @Constant(name = "Collision Response", constraints = "-100,100")
     public static float COLLISION_RESPONSE = -50f;
+    @Constant(name = "Damping", constraints = "0,1")
+    public static float DAMPING = .97f;
     private final Grid grid;
     private Level level;
     private int ticks;
@@ -29,7 +34,7 @@ public class Apple extends DynamicEntity {
         this.levelState = levelState;
         this.pathFinder = new PathFinder(grid);
 
-        ticks = TICKS_IN_STATE;
+        ticks = 0;
     }
 
     public void setLevel(Level level) {
@@ -60,8 +65,8 @@ public class Apple extends DynamicEntity {
         me = getPosition();
         vel = getVelocity();
 
-        me.x += 0.001f;
-        me.y += 0.001f;
+        //me.x += 0.001f;
+        //me.y += 0.001f;
 
         if (levelState.getCurrentPowerup() == Powerup.KillAll) {
             markForKill();
@@ -71,7 +76,7 @@ public class Apple extends DynamicEntity {
 
         wallBounce(grid, me, vel);
 
-        vel.mul(.97f);
+        vel.mul(DAMPING);
         vel.add((float) Math.random() - 0.5f, (float) Math.random() - 0.5f);
 
         if (vel.len() > CHASE_SPEED)

@@ -6,6 +6,7 @@ package pacandroid.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import me.lachlanap.lct.gui.LCTFrame;
 import pacandroid.AppLog;
 import pacandroid.DesktopLog;
 import pacandroid.PacAndroidGame;
@@ -31,6 +32,11 @@ public class Launcher {
         config.height = 800;
         config.useGL20 = true;
 
-        LwjglApplication app = new LwjglApplication(new PacAndroidGame(), config);
+        PacAndroidGame game = new PacAndroidGame();
+
+        LCTFrame frame = new LCTFrame(game.getLCTManager());
+        frame.setVisible(true);
+
+        LwjglApplication app = new LwjglApplication(game, config);
     }
 }
