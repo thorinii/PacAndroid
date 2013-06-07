@@ -24,12 +24,12 @@ public class MainMenuScreen extends AbstractScreen {
         super(game);
 
         gui = new GUI(800, 600);
-        gui.setBackground(new Texture(Gdx.files.classpath(
+        gui.setBackground(new Texture(Gdx.files.internal(
                 "gui/background.png")));
 
         Texture playUp, playDown;
-        playUp = new Texture(Gdx.files.classpath("gui/play-up.png"));
-        playDown = new Texture(Gdx.files.classpath("gui/play-down.png"));
+        playUp = new Texture(Gdx.files.internal("gui/play-up.png"));
+        playDown = new Texture(Gdx.files.internal("gui/play-down.png"));
 
         Button playButton = new Button(playUp, playDown);
         playButton.setCentre(400, 450);
@@ -42,8 +42,8 @@ public class MainMenuScreen extends AbstractScreen {
         gui.add(playButton);
 
         Texture exitUp, exitDown;
-        exitUp = new Texture(Gdx.files.classpath("gui/exit-up.png"));
-        exitDown = new Texture(Gdx.files.classpath("gui/exit-down.png"));
+        exitUp = new Texture(Gdx.files.internal("gui/exit-up.png"));
+        exitDown = new Texture(Gdx.files.internal("gui/exit-down.png"));
         Button exitButton = new Button(exitUp, exitDown);
         exitButton.setCentre(400, 150);
         exitButton.setActionListener(new ActionListener() {

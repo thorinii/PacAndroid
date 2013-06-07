@@ -6,7 +6,6 @@
             <name>PacAndroid Common</name>
             <explicit-platform explicit-source-supported="true"/>
             <source-roots>
-                <root id="src.assets.dir"/>
                 <root id="src.test-data.dir"/>
                 <root id="src.dir"/>
             </source-roots>

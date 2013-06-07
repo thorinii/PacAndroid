@@ -14,10 +14,10 @@ public class AndyAndroidRenderer extends AnimatedEntityRenderer {
     public AndyAndroidRenderer() {
         super(14);
         setFrames(new Texture[]{
-            new Texture(Gdx.files.classpath("640x/android/andy-1.png")),
-            new Texture(Gdx.files.classpath("640x/android/andy-2.png")),
-            new Texture(Gdx.files.classpath("640x/android/andy-3.png")),
-            new Texture(Gdx.files.classpath("640x/android/andy-4.png"))
+            new Texture(Gdx.files.internal("640x/android/andy-1.png")),
+            new Texture(Gdx.files.internal("640x/android/andy-2.png")),
+            new Texture(Gdx.files.internal("640x/android/andy-3.png")),
+            new Texture(Gdx.files.internal("640x/android/andy-4.png"))
         });
     }
 

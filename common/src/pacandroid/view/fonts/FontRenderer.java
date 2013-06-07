@@ -22,7 +22,7 @@ public class FontRenderer {
 
     private void loadFonts() {
         FreeTypeFontGenerator benderGenerator = new FreeTypeFontGenerator(
-                Gdx.files.classpath("fonts/bendersolid.ttf"));
+                Gdx.files.internal("fonts/bendersolid.ttf"));
 
         BitmapFont benderSolid = benderGenerator.generateFont(50);
         benderSolid.setColor(1f, 1f, 1f, 1f);

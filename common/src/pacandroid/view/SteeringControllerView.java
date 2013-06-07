@@ -15,8 +15,8 @@ public class SteeringControllerView {
     public SteeringControllerView(SteeringController steeringController) {
         this.steeringController = steeringController;
 
-        baseTexture = new Texture(Gdx.files.classpath("steering/base.png"));
-        dragTexture = new Texture(Gdx.files.classpath("steering/drag.png"));
+        baseTexture = new Texture(Gdx.files.internal("steering/base.png"));
+        dragTexture = new Texture(Gdx.files.internal("steering/drag.png"));
     }
 
     public SteeringController getSteeringController() {

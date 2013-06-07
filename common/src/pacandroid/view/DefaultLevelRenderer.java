@@ -94,27 +94,27 @@ public class DefaultLevelRenderer implements LevelRenderer {
     }
 
     private void loadColoursAndTextures() {
-        wallTexture = new Texture(Gdx.files.classpath("640x/wall-32x32.png"));
-        scoreIconTexture = new Texture(Gdx.files.classpath("score.png"));
-        lifeIconTexture = new Texture(Gdx.files.classpath("heart.png"));
+        wallTexture = new Texture(Gdx.files.internal("640x/wall-32x32.png"));
+        scoreIconTexture = new Texture(Gdx.files.internal("score.png"));
+        lifeIconTexture = new Texture(Gdx.files.internal("heart.png"));
 
         jellybeanTextures = new Texture[7];
         for (int i = 0; i < jellybeanTextures.length; i++) {
             jellybeanTextures[i] = new Texture(Gdx.files
-                    .classpath("640x/jellybean-32x32-" + (i + 1) + ".png"));
+                    .internal("640x/jellybean-32x32-" + (i + 1) + ".png"));
         }
 
         powerupGridTextures = new Texture[5];
         for (int i = 0; i < powerupGridTextures.length; i++) {
             powerupGridTextures[i] = new Texture(Gdx.files
-                    .classpath("640x/icecream-32x32-" + (i + 1) + ".png"));
+                    .internal("640x/icecream-32x32-" + (i + 1) + ".png"));
         }
 
         powerupIconTextures = new Texture[5];
         powerupIconTextures[Powerup.DoubleScore.ordinal()] = new Texture(Gdx.files
-                .classpath("powerup/double-score.jpg"));
+                .internal("powerup/double-score.jpg"));
         powerupIconTextures[Powerup.Edible.ordinal()] = new Texture(Gdx.files
-                .classpath("powerup/edible.jpg"));
+                .internal("powerup/edible.jpg"));
 
         fontRenderer = new FontRenderer();
         fontRenderer.setFont("BenderSolid");

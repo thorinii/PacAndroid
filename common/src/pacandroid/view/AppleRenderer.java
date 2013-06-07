@@ -13,7 +13,7 @@ public class AppleRenderer implements EntityRenderer {
 
     public AppleRenderer() {
         texture = new Texture(Gdx.files
-                .classpath("640x/apple-30x30.png"));
+                .internal("640x/apple-30x30.png"));
     }
 
     @Override
