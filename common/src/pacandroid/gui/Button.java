@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
  *
  * @author lachlan
  */
-public class Button extends Actor {
+public class Button extends GUIComponent {
 
     private final Texture upTexture;
     private final Texture downTexture;
@@ -54,10 +54,6 @@ public class Button extends Actor {
 
         setWidth(upTexture.getWidth());
         setHeight(upTexture.getHeight());
-    }
-
-    public void setCentre(float x, float y) {
-        super.setPosition(x - getWidth() / 2, y - getHeight() / 2);
     }
 
     public void setActionListener(ActionListener actionListener) {

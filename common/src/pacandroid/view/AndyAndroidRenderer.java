@@ -11,8 +11,10 @@ import pacandroid.model.GridLockedDynamicEntity;
 
 public class AndyAndroidRenderer extends AnimatedEntityRenderer {
 
+    public static int ANIMATION_FPS = 14;
+
     public AndyAndroidRenderer() {
-        super(14);
+        super(ANIMATION_FPS);
         setFrames(new Texture[]{
             new Texture(Gdx.files.internal("640x/android/andy-1.png")),
             new Texture(Gdx.files.internal("640x/android/andy-2.png")),

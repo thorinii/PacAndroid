@@ -30,7 +30,7 @@ public class DefaultLevelRenderer implements LevelRenderer {
     private final OrthographicCamera cam;
     private final SpriteBatch spriteBatch;
     //
-    private FontRenderer fontRenderer;
+    private final FontRenderer fontRenderer;
     private SteeringControllerView steeringControllerView;
     private final Map<Class<? extends Entity>, EntityRenderer> entityRenderers;
     //
@@ -52,7 +52,7 @@ public class DefaultLevelRenderer implements LevelRenderer {
     private Powerup currentPowerup;
 
     public DefaultLevelRenderer(int width, int height, Level level,
-            LevelState levelState) {
+            FontRenderer fontRenderer, LevelState levelState) {
         if (width > (height * SCREEN_RATIO)) {
             this.width = width;
             this.height = (float) (width * SCREEN_RATIO);
@@ -73,6 +73,8 @@ public class DefaultLevelRenderer implements LevelRenderer {
         this.level = level;
 
         this.levelState = levelState;
+
+        this.fontRenderer = fontRenderer;
 
         this.cam = new OrthographicCamera(this.width, this.height);
         this.cam.position
@@ -115,9 +117,6 @@ public class DefaultLevelRenderer implements LevelRenderer {
                 .internal("powerup/double-score.jpg"));
         powerupIconTextures[Powerup.Edible.ordinal()] = new Texture(Gdx.files
                 .internal("powerup/edible.jpg"));
-
-        fontRenderer = new FontRenderer();
-        fontRenderer.setFont("BenderSolid");
     }
 
     private void registerRenderers() {

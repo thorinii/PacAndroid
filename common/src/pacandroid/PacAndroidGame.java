@@ -6,13 +6,14 @@ package pacandroid;
 
 import com.badlogic.gdx.Game;
 import me.lachlanap.lct.LCTManager;
-import me.lachlanap.lct.gui.LCTFrame;
 import pacandroid.model.AndyAndroid;
 import pacandroid.model.Apple;
 import pacandroid.model.Level;
 import pacandroid.model.loader.LevelLoader;
 import pacandroid.screens.GameScreen;
 import pacandroid.screens.MainMenuScreen;
+import pacandroid.view.AndyAndroidRenderer;
+import pacandroid.view.fonts.FontRenderer;
 
 /**
  *
@@ -22,6 +23,7 @@ public class PacAndroidGame extends Game {
 
     private final LevelLoader loader;
     private final LCTManager manager;
+    private FontRenderer fontRenderer;
 
     public PacAndroidGame() {
         this(null);
@@ -34,10 +36,14 @@ public class PacAndroidGame extends Game {
         manager.register(AndyAndroid.class);
         manager.register(Apple.class);
         manager.register(Level.class);
+        manager.register(AndyAndroidRenderer.class);
     }
 
     @Override
     public void create() {
+        fontRenderer = new FontRenderer();
+        fontRenderer.setFont("BenderSolid");
+
         //mainMenu();
         play();
     }
@@ -53,9 +59,9 @@ public class PacAndroidGame extends Game {
 
     public void play() {
         if (loader != null)
-            setScreen(new GameScreen(this, loader));
+            setScreen(new GameScreen(this, loader, fontRenderer));
         else
-            setScreen(new GameScreen(this));
+            setScreen(new GameScreen(this, fontRenderer));
     }
 
     public void mainMenu() {

@@ -3,24 +3,29 @@ package pacandroid.model;
 public class Score {
 
     private int score;
+    private int jellybeans;
+    private int powerups;
+    private int apples;
 
     public Score() {
         score = 0;
-    }
-
-    public Score(int score) {
-        this.score = score;
+        jellybeans = 0;
+        powerups = 0;
+        apples = 0;
     }
 
     public void eatJellyBean() {
+        jellybeans++;
         score++;
     }
 
     public void eatPowerup() {
+        powerups++;
         score += 8;
     }
 
     public void eatApple() {
+        apples++;
         score += 5;
     }
 
@@ -34,6 +39,18 @@ public class Score {
 
     public int getScore() {
         return score;
+    }
+
+    public int getJellybeans() {
+        return jellybeans;
+    }
+
+    public int getPowerups() {
+        return powerups;
+    }
+
+    public int getApples() {
+        return apples;
     }
 
     @Override

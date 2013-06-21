@@ -8,7 +8,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import pacandroid.view.fonts.FontRenderer;
 
 /**
  *
@@ -23,6 +25,14 @@ public class GUI {
     public GUI(int width, int height) {
         size = new Vector2(width, height);
         stage = new Stage(width, height, false);
+    }
+
+    public void setFontRenderer(FontRenderer renderer) {
+        for (Actor actor : stage.getActors()) {
+            if (actor instanceof UsesFonts) {
+                ((UsesFonts) actor).setFont(renderer);
+            }
+        }
     }
 
     public void resize(int width, int height) {
@@ -58,7 +68,7 @@ public class GUI {
         stage.draw();
     }
 
-    public void add(Button button) {
-        stage.addActor(button);
+    public void add(GUIComponent guiComponent) {
+        stage.addActor(guiComponent);
     }
 }

@@ -47,6 +47,7 @@ public final class LevelState {
     private int powerupTimeLeft;
     private Score score;
     private int lives;
+    private float timeOnLevel;
     private boolean gameOver;
     private boolean playerWon;
 
@@ -67,6 +68,10 @@ public final class LevelState {
 
     public int getLives() {
         return lives;
+    }
+
+    public float getTimeOnLevel() {
+        return timeOnLevel;
     }
 
     public boolean isGameOver() {
@@ -121,7 +126,9 @@ public final class LevelState {
         setCurrentPowerup(valid[hash]);
     }
 
-    public void updatePowerups(float tpf) {
+    public void update(float tpf) {
+        timeOnLevel += tpf;
+
         if (powerupTimeLeft != Integer.MIN_VALUE) {
             if (powerupTimeLeft == 0) {
                 powerupTimeLeft = -1;

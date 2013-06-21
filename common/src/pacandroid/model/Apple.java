@@ -11,7 +11,7 @@ public class Apple extends DynamicEntity {
 
     public static final int AI_TRACK = 0;
     public static final int AI_PATHFIND = 1;
-    @Constant(name = "Chase Speed", constraints = "")
+    @Constant(name = "Chase Speed", constraints = "0,")
     public static float CHASE_SPEED = 15f;
     @Constant(name = "Wander Speed", constraints = "0,")
     public static float WANDER_SPEED = 9f;
