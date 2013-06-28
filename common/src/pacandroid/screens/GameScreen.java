@@ -8,6 +8,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import pacandroid.AppLog;
 import pacandroid.controller.LevelController;
 import pacandroid.controller.SteeringController;
@@ -172,6 +176,7 @@ public class GameScreen extends AbstractScreen {
             steeringController.touchUp(screenX, screenY);
 
             if (levelState.isGameOver()) {
+                writeHeatmap();
                 gotoScreen(new GameOverScreen(
                         getGame(), fontRenderer,
                         levelState.getTimeOnLevel(), levelState.getScore()));
@@ -194,6 +199,36 @@ public class GameScreen extends AbstractScreen {
         @Override
         public boolean scrolled(int amount) {
             return true;
+        }
+    }
+
+    private void writeHeatmap() {
+        try {
+            DataOutputStream dos = new DataOutputStream(
+                    new BufferedOutputStream(
+                    new FileOutputStream("./heatmap.dat")));
+
+            try {
+                level.getHeatMap().writeOut(dos, level.getGrid());
+            } finally {
+                dos.close();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        try {
+            DataOutputStream dos = new DataOutputStream(
+                    new BufferedOutputStream(
+                    new FileOutputStream("./deathmap.dat")));
+
+            try {
+                level.getDeathMap().writeOut(dos, level.getGrid());
+            } finally {
+                dos.close();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 }
