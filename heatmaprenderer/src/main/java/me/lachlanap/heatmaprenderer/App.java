@@ -6,13 +6,61 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import javax.imageio.ImageIO;
 
 public class App {
 
     public static void main(String[] args) throws IOException {
-        doMap("./heatmap.dat");
-        doMap("./deathmap.dat");
+        Path cwd = Paths.get("./maps/");
+        List<Path> heatmaps = new ArrayList<Path>();
+        List<Path> deathmaps = new ArrayList<Path>();
+
+        for (Path sub : Files.newDirectoryStream(cwd)) {
+            String filename = sub.getName(sub.getNameCount() - 1).toString();
+
+            if (!filename.endsWith(".dat"))
+                continue;
+
+            if (filename.startsWith("heatmap")) {
+                heatmaps.add(sub);
+            } else if (filename.startsWith("deathmap")) {
+                deathmaps.add(sub);
+            }
+        }
+
+        doMaps(heatmaps, "heatmap");
+        doMaps(deathmaps, "deathmap");
+    }
+
+    private static void doMaps(List<Path> maps, String name) throws IOException {
+        File out = new File(name + ".png");
+
+        HeatRenderer heatRenderer = new HeatRenderer();
+        int[][] map;
+        Iterator<Path> it = maps.iterator();
+
+        if (maps.isEmpty())
+            return;
+        else {
+            Path path = it.next();
+            System.out.println("Loading: " + path);
+            map = heatRenderer.load(path.toString());
+        }
+
+        for (; it.hasNext();) {
+            Path path = it.next();
+            System.out.println("Loading: " + path);
+            heatRenderer.loadAppend(path.toString());
+        }
+
+        BufferedImage heatmap = heatRenderer.process();
+        compositeOnMap(map, heatmap, out);
     }
 
     private static void doMap(String filename) throws IOException {
@@ -25,7 +73,10 @@ public class App {
         HeatRenderer heatRenderer = new HeatRenderer();
         int[][] map = heatRenderer.load(filename);
         BufferedImage heatmap = heatRenderer.process();
+        compositeOnMap(map, heatmap, out);
+    }
 
+    private static void compositeOnMap(int[][] map, BufferedImage heatmap, File out) throws IOException {
         if (map == null) {
             System.out.println("No map data.");
             ImageIO.write(heatmap, "png", out);

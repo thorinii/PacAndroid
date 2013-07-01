@@ -11,7 +11,7 @@ import java.util.concurrent.RecursiveTask;
 
 public class HeatRenderer {
 
-    private static final int SCALE = 5;
+    private static final int SCALE = 6;
     private static final float DIST = 5f * SCALE;
     private static final float DIST2 = DIST * DIST;
     private static final int TRANSPARENT = new Color(0, true).getRGB();
@@ -50,9 +50,36 @@ public class HeatRenderer {
             dis.close();
         }
 
-        System.out.println("Loaded Heatmap: " + width + "x" + height + " spaces.");
-
         return worldMap;
+    }
+
+    public void loadAppend(String file) throws IOException {
+        DataInputStream dis = new DataInputStream(
+                new BufferedInputStream(
+                new FileInputStream(file)));
+        try {
+            if (dis.readBoolean()) {
+                final int worldWidth = dis.readInt();
+                final int worldHeight = dis.readInt();
+
+                for (int i = 0; i < worldWidth; i++)
+                    for (int j = 0; j < worldHeight; j++)
+                        dis.readInt();
+            }
+
+            width = dis.readInt();
+            height = dis.readInt();
+            if (data.length != width || data[0].length != height)
+                throw new IllegalStateException("Cannot append heatmap of different size: " + width + "x" + height);
+
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+                    data[i][j] += dis.readInt();
+                }
+            }
+        } finally {
+            dis.close();
+        }
     }
 
     public BufferedImage process() {
@@ -79,8 +106,13 @@ public class HeatRenderer {
     private float getValue(int x, int y) {
         float value = 0;
 
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
+        int bx = (int) Math.floor(Math.max(0, (x - DIST - 1) / SCALE));
+        int by = (int) Math.floor(Math.max(0, (y - DIST - 1) / SCALE));
+        int w = (int) Math.ceil(Math.min(width, (x + DIST + 1) / SCALE));
+        int h = (int) Math.ceil(Math.min(height, (y + DIST + 1) / SCALE));
+
+        for (int i = bx; i < w; i++) {
+            for (int j = by; j < h; j++) {
                 float px = i * SCALE;
                 float py = j * SCALE;
 
