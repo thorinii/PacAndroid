@@ -5,14 +5,9 @@
 package pacandroid;
 
 import com.badlogic.gdx.Game;
-import me.lachlanap.lct.LCTManager;
-import pacandroid.model.AndyAndroid;
-import pacandroid.model.Apple;
-import pacandroid.model.Level;
 import pacandroid.model.loader.LevelLoader;
 import pacandroid.screens.GameScreen;
 import pacandroid.screens.MainMenuScreen;
-import pacandroid.view.AndyAndroidRenderer;
 import pacandroid.view.fonts.FontRenderer;
 
 /**
@@ -22,7 +17,6 @@ import pacandroid.view.fonts.FontRenderer;
 public class PacAndroidGame extends Game {
 
     private final LevelLoader loader;
-    private final LCTManager manager;
     private FontRenderer fontRenderer;
 
     public PacAndroidGame() {
@@ -31,12 +25,6 @@ public class PacAndroidGame extends Game {
 
     public PacAndroidGame(LevelLoader loader) {
         this.loader = loader;
-
-        manager = new LCTManager();
-        manager.register(AndyAndroid.class);
-        manager.register(Apple.class);
-        manager.register(Level.class);
-        manager.register(AndyAndroidRenderer.class);
     }
 
     @Override
@@ -46,10 +34,6 @@ public class PacAndroidGame extends Game {
 
         //mainMenu();
         play();
-    }
-
-    public LCTManager getLCTManager() {
-        return manager;
     }
 
     @Override

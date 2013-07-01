@@ -1,7 +1,6 @@
 package pacandroid.model;
 
 import com.badlogic.gdx.math.Vector2;
-import me.lachlanap.lct.Constant;
 import pacandroid.model.LevelState.Powerup;
 import pacandroid.model.PathFinder.Node;
 import pacandroid.model.PathFinder.Path;
@@ -11,13 +10,9 @@ public class Apple extends DynamicEntity {
 
     public static final int AI_TRACK = 0;
     public static final int AI_PATHFIND = 1;
-    @Constant(name = "Chase Speed", constraints = "0,")
     public static float CHASE_SPEED = 15f;
-    @Constant(name = "Wander Speed", constraints = "0,")
     public static float WANDER_SPEED = 9f;
-    @Constant(name = "Collision Response", constraints = "-100,100")
     public static float COLLISION_RESPONSE = -50f;
-    @Constant(name = "Damping", constraints = "0,1")
     public static float DAMPING = .97f;
     private final Grid grid;
     private Level level;
