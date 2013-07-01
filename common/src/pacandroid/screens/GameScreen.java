@@ -4,6 +4,7 @@
  */
 package pacandroid.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
@@ -203,32 +204,35 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void writeHeatmap() {
-        try {
-            DataOutputStream dos = new DataOutputStream(
-                    new BufferedOutputStream(
-                    new FileOutputStream("./heatmap.dat")));
+        if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            try {
+                DataOutputStream dos = new DataOutputStream(
+                        new BufferedOutputStream(
+                        new FileOutputStream("./heatmap-g.dat")));
+
+                try {
+                    level.getHeatMap().writeOut(dos, level.getGrid());
+                } finally {
+                    dos.close();
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
 
             try {
-                level.getHeatMap().writeOut(dos, level.getGrid());
-            } finally {
-                dos.close();
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
+                DataOutputStream dos = new DataOutputStream(
+                        new BufferedOutputStream(
+                        new FileOutputStream("./deathmap-g.dat")));
 
-        try {
-            DataOutputStream dos = new DataOutputStream(
-                    new BufferedOutputStream(
-                    new FileOutputStream("./deathmap.dat")));
-
-            try {
-                level.getDeathMap().writeOut(dos, level.getGrid());
-            } finally {
-                dos.close();
+                try {
+                    level.getDeathMap().writeOut(dos, level.getGrid());
+                } finally {
+                    dos.close();
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
             }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        } else {
         }
     }
 }
