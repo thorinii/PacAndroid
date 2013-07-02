@@ -39,15 +39,15 @@ public class GameOverScreen extends AbstractScreen {
         playUp = new Texture(Gdx.files.internal("gui/play-up.png"));
         playDown = new Texture(Gdx.files.internal("gui/play-down.png"));
 
-        Button playButton = new Button(playUp, playDown);
-        playButton.setCentre(400, 150);
-        playButton.setActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                getGame().play();
-            }
-        });
-        gui.add(playButton);
+//        Button playButton = new Button(playUp, playDown);
+//        playButton.setCentre(400, 150);
+//        playButton.setActionListener(new ActionListener() {
+//            @Override
+//           public void actionPerformed(ActionEvent e) {
+//                getGame().play();
+//            }
+//        });
+//        gui.add(playButton);
 
         Text text = new Text("Time: " + time + " seconds");
         text.setCentre(400, 200);

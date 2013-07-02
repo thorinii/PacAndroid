@@ -8,11 +8,15 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
-import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.UUID;
 import pacandroid.AppLog;
 import pacandroid.controller.LevelController;
 import pacandroid.controller.SteeringController;
@@ -22,6 +26,7 @@ import pacandroid.view.DefaultLevelRenderer;
 import pacandroid.view.LevelRenderer;
 import pacandroid.model.Level;
 import pacandroid.PacAndroidGame;
+import pacandroid.stats.HeatMap;
 import pacandroid.view.fonts.FontRenderer;
 
 /**
@@ -35,7 +40,7 @@ public class GameScreen extends AbstractScreen {
      */
     public static final int GRID_UNIT = 55;
     public static final float MIN_DELTA = 0.015f;
-    public static final float REGULAR_DELTA = 0.02f;
+    public static final float REGULAR_DELTA = 0.015f;
     private final LevelLoader loader;
     private Level level;
     private LevelController controller;
@@ -204,35 +209,88 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void writeHeatmap() {
+        writeHeatmapToHTTP();
+
         if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
             try {
-                DataOutputStream dos = new DataOutputStream(
-                        new BufferedOutputStream(
-                        new FileOutputStream("./heatmap-g.dat")));
-
-                try {
-                    level.getHeatMap().writeOut(dos, level.getGrid());
-                } finally {
-                    dos.close();
-                }
+                writeHeatmapToFile();
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+        }
+    }
 
-            try {
-                DataOutputStream dos = new DataOutputStream(
-                        new BufferedOutputStream(
-                        new FileOutputStream("./deathmap-g.dat")));
-
+    private void writeHeatmapToHTTP() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
                 try {
-                    level.getDeathMap().writeOut(dos, level.getGrid());
-                } finally {
-                    dos.close();
+                    URL dest = new URL("http://www.terrifictales.net/pa/stat-heatmap.php?kqwu=aSD8dh2s09d2");
+                    HttpURLConnection connection = (HttpURLConnection) dest.openConnection();
+
+                    connection.setDoOutput(true);
+                    connection.setRequestProperty("Content/Type", "application/octet-stream");
+                    connection.setRequestMethod("POST");
+
+                    writeHeatmap(connection.getOutputStream(), level.getHeatMap());
+
+                    InputStream is = connection.getInputStream();
+                    byte[] buf = new byte[1024];
+                    System.out.println("Reading (" + connection.getResponseCode() + ")");
+                    while (is.read(buf) != -1) ;
+                    is.close();
+
+
+
+                    dest = new URL("http://www.terrifictales.net/pa/stat-deathmap.php?akeu=d83hs7uJsjeSufdk");
+                    connection = (HttpURLConnection) dest.openConnection();
+
+                    connection.setDoOutput(true);
+                    connection.setRequestProperty("Content/Type", "application/octet-stream");
+                    connection.setRequestMethod("POST");
+
+                    writeHeatmap(connection.getOutputStream(), level.getDeathMap());
+
+                    is = connection.getInputStream();
+                    System.out.println("Reading (" + connection.getResponseCode() + ")");
+                    while (is.read(buf) != -1) ;
+                    is.close();
+
+                    System.out.println("Uploaded data");
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
                 }
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
             }
-        } else {
+        }).start();
+    }
+
+    private void writeHeatmapToFile() throws IOException {
+        if (!Gdx.files.isExternalStorageAvailable())
+            return;
+        FileHandle fh = Gdx.files.external(".pacandroid/stats/");
+        if (!fh.exists())
+            fh.mkdirs();
+
+        String uuid = UUID.randomUUID().toString();
+        try {
+            writeHeatmap(
+                    fh.child("heatmap-" + uuid + ".dat").write(false),
+                    level.getHeatMap());
+            writeHeatmap(
+                    fh.child("heatmap-" + uuid + ".dat").write(false),
+                    level.getDeathMap());
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    private void writeHeatmap(OutputStream heatmap, HeatMap map) throws IOException {
+        DataOutputStream dos = new DataOutputStream(heatmap);
+        try {
+            map.writeOut(dos, level.getGrid());
+            dos.flush();
+        } finally {
+            dos.close();
         }
     }
 }

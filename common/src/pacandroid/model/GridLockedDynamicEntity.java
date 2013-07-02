@@ -1,5 +1,6 @@
 package pacandroid.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -104,6 +105,8 @@ public abstract class GridLockedDynamicEntity extends DynamicEntity {
      */
     @Override
     public void update(float timestep) {
+        Vector2 oldpos = getPosition().cpy();
+
         super.update(timestep);
 
         Vector2 pos = getPosition();
@@ -168,6 +171,20 @@ public abstract class GridLockedDynamicEntity extends DynamicEntity {
 
         gridPosition.x = getPosition().x / grid.getUnitSize();
         gridPosition.y = getPosition().y / grid.getUnitSize();
+
+
+        if (Grid.isWall(grid.getAt(pos.x, pos.y))) {
+            StringBuilder sb = new StringBuilder("Mighty Big Problem: ");
+            sb.append("entity in wall block ");
+            sb.append(String.format("[%d,%d] -> [%d,%d] ",
+                                    oldpos.x, oldpos.y,
+                                    pos.x, pos.y));
+            sb.append(String.format("([%d,%d])",
+                                    vel.x, vel.y));
+            sb.append(". dt: ").append(timestep);
+
+            Gdx.app.error("physics", sb.toString());
+        }
     }
 
     /**

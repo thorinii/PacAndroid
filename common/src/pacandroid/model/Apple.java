@@ -10,7 +10,7 @@ public class Apple extends DynamicEntity {
 
     public static final int AI_TRACK = 0;
     public static final int AI_PATHFIND = 1;
-    public static float CHASE_SPEED = 12f;
+    public static float CHASE_SPEED = 3f;
     public static float WANDER_SPEED = 9f;
     public static float COLLISION_RESPONSE = -50f;
     public static float DAMPING = .97f;

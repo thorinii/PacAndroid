@@ -5,7 +5,7 @@ import pacandroid.model.LevelState.Powerup;
 
 public class AndyAndroid extends GridLockedDynamicEntity {
 
-    public static float REGULAR_SPEED = 15f;
+    public static float REGULAR_SPEED = 6f;
     private final LevelState levelState;
 
     public AndyAndroid(Grid grid, LevelState levelState) {
