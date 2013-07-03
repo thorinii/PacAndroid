@@ -17,15 +17,16 @@ import pacandroid.view.fonts.FontRenderer;
  */
 public class PacAndroidGame extends Game {
 
-    private final LevelLoader loader;
+    private LevelLoader loader;
     private FontRenderer fontRenderer;
 
     public PacAndroidGame() {
-        this.loader = new LevelLoader();
     }
 
     @Override
     public void create() {
+        this.loader = new LevelLoader();
+        
         fontRenderer = new FontRenderer();
         fontRenderer.setFont("BenderSolid");
 
@@ -39,7 +40,7 @@ public class PacAndroidGame extends Game {
     }
 
     public void play() {
-        Level level = loader.loadBuiltinLevel(0);
+        Level level = loader.loadNextLevel();
         setScreen(new GameScreen(this, level, fontRenderer));
     }
 

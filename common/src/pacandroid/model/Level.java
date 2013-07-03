@@ -12,6 +12,7 @@ public class Level {
     public static final int GRID_WIDTH = 24;
     public static final int GRID_HEIGHT = 15;
     public static int MAX_ENEMIES = 1;
+    private final String name;
     private final List<Entity> entities;
     private final Grid wallGrid;
     private final HeatMap heatMap;
@@ -29,6 +30,11 @@ public class Level {
     private boolean playerWon;
 
     public Level() {
+        this("test-level");
+    }
+
+    public Level(String name) {
+        this.name = name;
         entities = new ArrayList<Entity>();
         wallGrid = new Grid(GRID_WIDTH, GRID_HEIGHT, GRID_UNIT_SIZE);
 
@@ -53,6 +59,10 @@ public class Level {
             andyAndroid = (AndyAndroid) entity;
         if (entity instanceof Apple)
             ((Apple) entity).setLevel(this);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getGridWidth() {
@@ -128,7 +138,7 @@ public class Level {
                 heatMap.addPoint(gridPoint);
             }
         }
-        
+
 
         timeOnLevel += timestep;
 

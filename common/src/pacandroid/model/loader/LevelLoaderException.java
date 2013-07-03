@@ -4,13 +4,11 @@
  */
 package pacandroid.model.loader;
 
-import java.io.IOException;
-
 /**
  *
  * @author lachlan
  */
-public class LevelLoaderException extends IOException {
+public class LevelLoaderException extends RuntimeException {
 
     public LevelLoaderException(String msg) {
         super(msg);

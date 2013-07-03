@@ -26,8 +26,12 @@ public class LevelFileReader {
     }
 
     public Level readLevel(InputStream inputStream) throws IOException {
+        return readLevel(inputStream, "test-level");
+    }
+
+    public Level readLevel(InputStream inputStream, String name) throws IOException {
         DataInputStream in = new DataInputStream(inputStream);
-        Level l = new Level();
+        Level l = new Level(name);
 
         try {
             compareHeader(in);

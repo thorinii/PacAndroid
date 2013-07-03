@@ -5,62 +5,92 @@ import java.io.InputStream;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import pacandroid.model.AndyAndroid;
 import pacandroid.model.Grid;
 import pacandroid.model.Level;
 
 public class LevelLoader {
 
-    public Level loadBuiltinLevel(int levelIndex) {
-        String levelFile = "tims-level.palvl";
-        InputStream in;
+    private static final String LEVELS_FILE = "builtin-levels.txt";
+    private final LevelFileReader reader = new LevelFileReader();
+    private final String[] files;
+    private int currentLevel = 0;
 
+    public LevelLoader() {
+        files = loadBuiltinLevels();
+    }
+
+    private String[] loadBuiltinLevels() {
         try {
-            FileHandle handle;
+            FileHandle levelsFile = Gdx.files.classpath(LEVELS_FILE);
 
-            if (System.getProperty("level-file") != null) {
-                levelFile = System.getProperty("level-file");
-                handle = Gdx.files.absolute(levelFile);
-            } else {
-                handle = Gdx.files.classpath(levelFile);
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(
+                    levelsFile.read()));
+            try {
+                List<String> lines = new ArrayList<String>();
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    lines.add(line);
+                }
+
+                System.out.println(lines);
+
+                return lines.toArray(new String[lines.size()]);
+            } finally {
+                br.close();
             }
+        } catch (IOException ioe) {
+            throw new LevelLoaderException("Couldn't read levels file", ioe);
+        }
+    }
 
-            System.out.println(handle.name() + " " + handle.exists());
+    public Level loadNextLevel() {
+        Level l = loadLevel(files[currentLevel]);
+        currentLevel++;
+        return l;
+    }
+
+    private Level loadLevel(String levelFile) {
+        FileHandle handle;
+
+        if (System.getProperty("level-file") != null) {
+            levelFile = System.getProperty("level-file");
+            handle = Gdx.files.absolute(levelFile);
+        } else {
+            handle = Gdx.files.classpath(levelFile);
+        }
+
+        if (!handle.exists()) {
+            handle = Gdx.files.absolute(levelFile);
 
             if (!handle.exists()) {
-                handle = Gdx.files.absolute(levelFile);
-                System.out.println(handle.name() + " " + handle.exists());
-
-                if (!handle.exists()) {
-                    handle = Gdx.files.absolute("test-data/" + levelFile);
-
-                    System.out.println(handle.name() + " " + handle.exists());
-                }
+                handle = Gdx.files.absolute("test-data/" + levelFile);
             }
+        }
 
-            if (!handle.exists())
-                throw new LevelLoaderException(
-                        "Can not find level: " + levelFile);
+        if (!handle.exists())
+            throw new LevelLoaderException("Can not find level: " + levelFile);
 
-            in = handle.read();
+        try {
+            InputStream in = handle.read();
             try {
-                LevelFileReader reader = new LevelFileReader();
-
-                Level level = reader.readLevel(in);
+                Level level = reader.readLevel(in, levelFile);
                 setupLevel(level);
 
                 return level;
             } finally {
                 in.close();
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to read level file: " + levelFile,
-                                       e);
+        } catch (IOException e) {
+            throw new LevelLoaderException("Unable to read level file: " + levelFile, e);
         }
-    }
-
-    public Level loadCustomLevel(String name) {
-        throw new UnsupportedOperationException();
     }
 
     protected void setupLevel(Level level) {

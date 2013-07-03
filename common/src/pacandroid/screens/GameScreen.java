@@ -207,11 +207,16 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void writeHeatmapToHTTP() {
+        final String type = Gdx.app.getType().name().toLowerCase();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    URL dest = new URL("http://www.terrifictales.net/pa/stat-heatmap.php?kqwu=aSD8dh2s09d2");
+                    URL dest = new URL("http://www.terrifictales.net/pa/stat-heatmap.php"
+                            + "?kqwu=aSD8dh2s09d2"
+                            + "&level=" + level.getName()
+                            + "&client=" + type);
                     HttpURLConnection connection = (HttpURLConnection) dest.openConnection();
 
                     connection.setDoOutput(true);
@@ -228,7 +233,10 @@ public class GameScreen extends AbstractScreen {
 
 
 
-                    dest = new URL("http://www.terrifictales.net/pa/stat-deathmap.php?akeu=d83hs7uJsjeSufdk");
+                    dest = new URL("http://www.terrifictales.net/pa/stat-deathmap.php"
+                            + "?akeu=d83hs7uJsjeSufdk"
+                            + "&level=" + level.getName()
+                            + "&client=" + type);
                     connection = (HttpURLConnection) dest.openConnection();
 
                     connection.setDoOutput(true);
