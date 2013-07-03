@@ -14,8 +14,7 @@ import pacandroid.model.Apple;
 import pacandroid.model.Entity;
 import pacandroid.model.Grid;
 import pacandroid.model.Level;
-import pacandroid.model.LevelState;
-import pacandroid.model.LevelState.Powerup;
+import pacandroid.model.Powerup;
 import pacandroid.util.Timer;
 import pacandroid.util.Timers;
 import pacandroid.view.fonts.FontRenderer;
@@ -35,7 +34,6 @@ public class DefaultLevelRenderer implements LevelRenderer {
     private final Map<Class<? extends Entity>, EntityRenderer> entityRenderers;
     //
     private final Level level;
-    private final LevelState levelState;
     //
     private Texture wallTexture;
     private Texture scoreIconTexture;
@@ -52,7 +50,7 @@ public class DefaultLevelRenderer implements LevelRenderer {
     private Powerup currentPowerup;
 
     public DefaultLevelRenderer(int width, int height, Level level,
-            FontRenderer fontRenderer, LevelState levelState) {
+            FontRenderer fontRenderer) {
         if (width > (height * SCREEN_RATIO)) {
             this.width = width;
             this.height = (float) (width * SCREEN_RATIO);
@@ -71,8 +69,6 @@ public class DefaultLevelRenderer implements LevelRenderer {
         this.ppuW = this.width / level.getWorldWidth();
         this.ppuH = this.height / level.getWorldHeight();
         this.level = level;
-
-        this.levelState = levelState;
 
         this.fontRenderer = fontRenderer;
 
@@ -155,7 +151,7 @@ public class DefaultLevelRenderer implements LevelRenderer {
         drawGrid();
         drawEntities();
 
-        if (!levelState.isGameOver()) {
+        if (!level.isGameOver()) {
             drawSteeringController();
             drawScores();
         }
@@ -216,10 +212,10 @@ public class DefaultLevelRenderer implements LevelRenderer {
         spriteBatch.draw(scoreIconTexture, offsetX + 10, offsetY + graphicY);
 
         fontRenderer.setColor(Color.RED);
-        fontRenderer.drawString(levelState.getScore().toString(), spriteBatch,
+        fontRenderer.drawString(level.getScore().toString(), spriteBatch,
                                 (int) offsetX + 60, (int) offsetY + graphicY);
 
-        for (int i = 0; i < Math.min(5, levelState.getLives()); i++)
+        for (int i = 0; i < Math.min(5, level.getLives()); i++)
             spriteBatch.draw(lifeIconTexture, offsetX + 100 + i * 42, offsetY
                     + graphicY + 40);
     }
@@ -227,7 +223,7 @@ public class DefaultLevelRenderer implements LevelRenderer {
     private void drawPowerups() {
         int graphicY = 710;
 
-        Powerup powerup = levelState.getCurrentPowerup();
+        Powerup powerup = level.getCurrentPowerup();
         float showTime;
 
         // Check for a new powerup... just make sure its not Null
@@ -261,10 +257,10 @@ public class DefaultLevelRenderer implements LevelRenderer {
     }
 
     private void drawMessages() {
-        if (levelState.isGameOver()) {
+        if (level.isGameOver()) {
             String message;
 
-            if (levelState.didPlayerWin()) {
+            if (level.didPlayerWin()) {
                 message = "You Made It!";
             } else {
                 message = "Game Over";

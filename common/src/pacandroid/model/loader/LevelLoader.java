@@ -8,11 +8,10 @@ import com.badlogic.gdx.math.Vector2;
 import pacandroid.model.AndyAndroid;
 import pacandroid.model.Grid;
 import pacandroid.model.Level;
-import pacandroid.model.LevelState;
 
 public class LevelLoader {
 
-    public Level loadBuiltinLevel(int levelIndex, LevelState levelState) {
+    public Level loadBuiltinLevel(int levelIndex) {
         String levelFile = "tims-level.palvl";
         InputStream in;
 
@@ -48,7 +47,7 @@ public class LevelLoader {
                 LevelFileReader reader = new LevelFileReader();
 
                 Level level = reader.readLevel(in);
-                setupLevel(level, levelState);
+                setupLevel(level);
 
                 return level;
             } finally {
@@ -64,11 +63,11 @@ public class LevelLoader {
         throw new UnsupportedOperationException();
     }
 
-    protected void setupLevel(Level level, LevelState levelState) {
-        spawnAndroid(level, levelState);
+    protected void setupLevel(Level level) {
+        spawnAndroid(level);
     }
 
-    private void spawnAndroid(Level l, LevelState levelState) {
+    private void spawnAndroid(Level l) {
         Grid g = l.getGrid();
         int x = -1;
         int y = -1;
@@ -85,7 +84,7 @@ public class LevelLoader {
         }
 
         if (x != -1 && y != -1) {
-            AndyAndroid entity = new AndyAndroid(g, levelState);
+            AndyAndroid entity = new AndyAndroid(g, l);
 
             entity.setPosition(new Vector2(x * Level.GRID_UNIT_SIZE, y
                     * Level.GRID_UNIT_SIZE));

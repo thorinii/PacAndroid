@@ -20,6 +20,13 @@ public class Level {
     private int maxEnemies;
     private int enemyAI;
     private int enemySpeed;
+    private Powerup currentPowerup;
+    private int powerupTimeLeft;
+    private Score score;
+    private int lives;
+    private float timeOnLevel;
+    private boolean gameOver;
+    private boolean playerWon;
 
     public Level() {
         entities = new ArrayList<Entity>();
@@ -29,6 +36,14 @@ public class Level {
         deathMap = new HeatMap(GRID_WIDTH * GRID_UNIT_SIZE, GRID_HEIGHT * GRID_UNIT_SIZE, 4);
 
         maxEnemies = MAX_ENEMIES;
+        setDefaults();
+    }
+
+    public void setDefaults() {
+        setCurrentPowerup(Powerup.LevelStartFreeze);
+
+        score = new Score();
+        lives = 3;
     }
 
     public void spawnEntity(Entity entity) {
@@ -100,16 +115,31 @@ public class Level {
     }
 
     public void update(float timestep) {
-        Iterator<Entity> itr = entities.iterator();
-        while (itr.hasNext()) {
-            Entity ent = itr.next();
-            ent.update(timestep);
-        }
+        if (!getCurrentPowerup().freeze && !isGameOver()) {
+            Iterator<Entity> itr = entities.iterator();
+            while (itr.hasNext()) {
+                Entity ent = itr.next();
+                ent.update(timestep);
+            }
 
-        if (andyAndroid != null && !andyAndroid.isMarkedForKill()) {
-            Vector2 gridPoint = andyAndroid.getPosition().cpy();
-            gridPoint.y = (GRID_HEIGHT * GRID_UNIT_SIZE) - gridPoint.y;
-            heatMap.addPoint(gridPoint);
+            if (andyAndroid != null && !andyAndroid.isMarkedForKill()) {
+                Vector2 gridPoint = andyAndroid.getPosition().cpy();
+                gridPoint.y = (GRID_HEIGHT * GRID_UNIT_SIZE) - gridPoint.y;
+                heatMap.addPoint(gridPoint);
+            }
+        }
+        
+
+        timeOnLevel += timestep;
+
+        if (powerupTimeLeft != Integer.MIN_VALUE) {
+            if (powerupTimeLeft == 0) {
+                powerupTimeLeft = -1;
+            } else {
+                powerupTimeLeft -= (int) (timestep * 1000);
+                if (powerupTimeLeft < 0)
+                    setCurrentPowerup(Powerup.Null);
+            }
         }
     }
 
@@ -127,5 +157,69 @@ public class Level {
                 itr.remove();
             }
         }
+    }
+
+    public Score getScore() {
+        return score;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public float getTimeOnLevel() {
+        return timeOnLevel;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public boolean didPlayerWin() {
+        return playerWon;
+    }
+
+    public void takeLife() {
+        lives--;
+
+        if (lives <= 0)
+            setGameOver(false);
+    }
+
+    public void addLife() {
+        lives++;
+    }
+
+    public void setGameOver(boolean playerWon) {
+        this.gameOver = true;
+        this.playerWon = playerWon;
+    }
+
+    public Powerup getCurrentPowerup() {
+        return currentPowerup;
+    }
+
+    public void setCurrentPowerup(Powerup currentPowerup) {
+        this.currentPowerup = currentPowerup;
+
+        powerupTimeLeft = currentPowerup.buffMillis;
+        if (powerupTimeLeft < 0) {
+            powerupTimeLeft = Integer.MIN_VALUE;
+        }
+    }
+
+    public void choosePowerup(int x, int y) {
+        Powerup[] valid = new Powerup[]{
+            Powerup.KillAll,
+            Powerup.Edible,
+            Powerup.DoubleScore,
+            Powerup.NewLife};
+
+        int hash = 23;
+        hash = hash * 53 + x;
+        hash = hash * 53 + y;
+        hash %= valid.length;
+
+        setCurrentPowerup(valid[hash]);
     }
 }

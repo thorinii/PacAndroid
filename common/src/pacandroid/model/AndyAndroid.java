@@ -1,30 +1,30 @@
 package pacandroid.model;
 
 import com.badlogic.gdx.math.Vector2;
-import pacandroid.model.LevelState.Powerup;
+import pacandroid.model.Powerup;
 
 public class AndyAndroid extends GridLockedDynamicEntity {
 
     public static float REGULAR_SPEED = 6f;
-    private final LevelState levelState;
+    private final Level level;
 
-    public AndyAndroid(Grid grid, LevelState levelState) {
+    public AndyAndroid(Grid grid, Level level) {
         super(new Vector2(1.875f, 1.875f), grid);
-        this.levelState = levelState;
+        this.level = level;
     }
 
-    public LevelState getLevelState() {
-        return levelState;
+    public Level getLevel() {
+        return level;
     }
 
     @Override
     protected boolean handleGridSpace(int x, int y, int gridSpace) {
         if (gridSpace == Grid.GRID_JELLYBEAN) {
-            levelState.getScore().eatJellyBean();
+            level.getScore().eatJellyBean();
             return true;
         } else if (gridSpace == Grid.GRID_POWERUP) {
-            levelState.getScore().eatPowerup();
-            levelState.choosePowerup(x, y);
+            level.getScore().eatPowerup();
+            level.choosePowerup(x, y);
             return true;
         } else {
             return false;
@@ -50,17 +50,17 @@ public class AndyAndroid extends GridLockedDynamicEntity {
         }
 
         // They are all gone
-        levelState.setGameOver(true);
+        level.setGameOver(true);
     }
 
     @Override
     public void collideWith(Entity other) {
         if (other instanceof Apple) {
-            if (levelState.getCurrentPowerup() == Powerup.Edible) {
+            if (level.getCurrentPowerup() == Powerup.Edible) {
                 other.markForKill();
-                levelState.getScore().eatApple();
+                level.getScore().eatApple();
             } else {
-                levelState.takeLife();
+                level.takeLife();
                 markForKill();
                 other.markForKill();
             }

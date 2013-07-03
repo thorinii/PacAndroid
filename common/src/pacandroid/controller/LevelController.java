@@ -10,8 +10,7 @@ import pacandroid.model.Apple;
 import pacandroid.model.Entity;
 import pacandroid.model.Grid;
 import pacandroid.model.Level;
-import pacandroid.model.LevelState;
-import pacandroid.model.LevelState.Powerup;
+import pacandroid.model.Powerup;
 import pacandroid.util.Timers;
 
 public class LevelController {
@@ -20,11 +19,9 @@ public class LevelController {
     private boolean left, right, up, down;
     private Vector2 touchControl;
     private int ticks;
-    private final LevelState levelState;
 
-    public LevelController(Level level, LevelState levelState) {
+    public LevelController(Level level) {
         this.level = level;
-        this.levelState = levelState;
 
         this.ticks = 0;
     }
@@ -87,7 +84,7 @@ public class LevelController {
             for (int i = 0; i < g.getWidth(); i++) {
                 for (int j = 0; j < g.getHeight(); j++) {
                     if (g.get(i, j) == Grid.GRID_ANDROID_SPAWN) {
-                        AndyAndroid entity = new AndyAndroid(g, levelState);
+                        AndyAndroid entity = new AndyAndroid(g, level);
                         entity.setPosition(new Vector2(
                                 i * Level.GRID_UNIT_SIZE, j
                                 * Level.GRID_UNIT_SIZE));
@@ -117,7 +114,7 @@ public class LevelController {
     private void spawnApple(Level l) {
         Grid g = l.getGrid();
 
-        if (levelState.getCurrentPowerup() == Powerup.KillAll)
+        if (level.getCurrentPowerup() == Powerup.KillAll)
             return;
 
         if (l.getEntitiesByType(Apple.class).size() < l.getMaxEnemies()) {
@@ -126,7 +123,8 @@ public class LevelController {
                     if (g.get(i, j) == Grid.GRID_ENEMY_SPAWN && randomTime(50)) {
                         int[] xy = findNearestEmpty(l, i, j);
 
-                        Apple entity = new Apple(g, levelState);
+                        Apple entity = new Apple(g);
+                        entity.setLevel(level);
                         entity.setPosition(new Vector2(
                                 xy[0] * Level.GRID_UNIT_SIZE,
                                 xy[1] * Level.GRID_UNIT_SIZE));
@@ -242,12 +240,12 @@ public class LevelController {
      * Processes some transient powerups
      */
     private void processPowerups() {
-        switch (levelState.getCurrentPowerup()) {
+        switch (level.getCurrentPowerup()) {
             case DoubleScore:
-                levelState.getScore().doubleScore();
+                level.getScore().doubleScore();
                 break;
             case NewLife:
-                levelState.addLife();
+                level.addLife();
                 break;
         }
     }

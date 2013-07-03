@@ -20,8 +20,6 @@ import java.util.UUID;
 import pacandroid.AppLog;
 import pacandroid.controller.LevelController;
 import pacandroid.controller.SteeringController;
-import pacandroid.model.LevelState;
-import pacandroid.model.loader.LevelLoader;
 import pacandroid.view.DefaultLevelRenderer;
 import pacandroid.view.LevelRenderer;
 import pacandroid.model.Level;
@@ -41,23 +39,17 @@ public class GameScreen extends AbstractScreen {
     public static final int GRID_UNIT = 55;
     public static final float MIN_DELTA = 0.015f;
     public static final float REGULAR_DELTA = 0.015f;
-    private final LevelLoader loader;
-    private Level level;
+    private final Level level;
     private LevelController controller;
     private LevelRenderer[] renderers;
     private SteeringController steeringController;
-    private LevelState levelState;
     private final FontRenderer fontRenderer;
     //
     private float lastSmallDelta;
 
-    public GameScreen(PacAndroidGame game, FontRenderer fontRenderer) {
-        this(game, new LevelLoader(), fontRenderer);
-    }
-
-    public GameScreen(PacAndroidGame game, LevelLoader loader, FontRenderer fontRenderer) {
+    public GameScreen(PacAndroidGame game, Level level, FontRenderer fontRenderer) {
         super(game);
-        this.loader = loader;
+        this.level = level;
         this.fontRenderer = fontRenderer;
     }
 
@@ -78,13 +70,10 @@ public class GameScreen extends AbstractScreen {
 
     private void updateLevel(float delta) {
         try {
-            if (!levelState.getCurrentPowerup().freeze && !levelState.isGameOver()) {
-                level.update(delta);
-            }
             level.removeDead();
 
-            if (!levelState.isGameOver())
-                levelState.update(delta);
+            if (!level.isGameOver())
+                level.update(delta);
             controller.update(delta);
         } catch (Exception e) {
             AppLog.l("Error: " + e.toString());
@@ -103,10 +92,7 @@ public class GameScreen extends AbstractScreen {
         super.show();
         Gdx.input.setInputProcessor(new InputHandler());
 
-        levelState = new LevelState();
-        level = loader.loadBuiltinLevel(0, levelState);
-
-        controller = new LevelController(level, levelState);
+        controller = new LevelController(level);
 
 
         steeringController = new SteeringController(level, controller,
@@ -116,7 +102,7 @@ public class GameScreen extends AbstractScreen {
 
         DefaultLevelRenderer renderer = new DefaultLevelRenderer(
                 (int) getScreenSize().x, (int) getScreenSize().y,
-                level, fontRenderer, levelState);
+                level, fontRenderer);
         renderer.setSteeringController(steeringController);
 
         renderers = new LevelRenderer[]{
@@ -181,11 +167,11 @@ public class GameScreen extends AbstractScreen {
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
             steeringController.touchUp(screenX, screenY);
 
-            if (levelState.isGameOver()) {
+            if (level.isGameOver()) {
                 writeHeatmap();
                 gotoScreen(new GameOverScreen(
                         getGame(), fontRenderer,
-                        levelState.getTimeOnLevel(), levelState.getScore()));
+                        level.getTimeOnLevel(), level.getScore()));
             }
 
             return true;

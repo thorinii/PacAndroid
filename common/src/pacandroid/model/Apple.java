@@ -1,7 +1,7 @@
 package pacandroid.model;
 
 import com.badlogic.gdx.math.Vector2;
-import pacandroid.model.LevelState.Powerup;
+import pacandroid.model.Powerup;
 import pacandroid.model.PathFinder.Node;
 import pacandroid.model.PathFinder.Path;
 import pacandroid.util.MathUtil;
@@ -17,16 +17,14 @@ public class Apple extends DynamicEntity {
     private final Grid grid;
     private Level level;
     private int ticks;
-    private final LevelState levelState;
     private Vector2 desired = new Vector2();
     private Vector2 steering = new Vector2();
     private PathFinder pathFinder;
     private Path path;
 
-    public Apple(Grid grid, LevelState levelState) {
+    public Apple(Grid grid) {
         super(new Vector2(1.5f, 1.5f));
         this.grid = grid;
-        this.levelState = levelState;
         this.pathFinder = new PathFinder(grid);
 
         ticks = 0;
@@ -63,7 +61,7 @@ public class Apple extends DynamicEntity {
         //me.x += 0.001f;
         //me.y += 0.001f;
 
-        if (levelState.getCurrentPowerup() == Powerup.KillAll) {
+        if (level.getCurrentPowerup() == Powerup.KillAll) {
             markForKill();
         } else {
             vel.add(getRegularSteering(ticks));

@@ -5,6 +5,7 @@
 package pacandroid;
 
 import com.badlogic.gdx.Game;
+import pacandroid.model.Level;
 import pacandroid.model.loader.LevelLoader;
 import pacandroid.screens.GameScreen;
 import pacandroid.screens.MainMenuScreen;
@@ -20,11 +21,7 @@ public class PacAndroidGame extends Game {
     private FontRenderer fontRenderer;
 
     public PacAndroidGame() {
-        this(null);
-    }
-
-    public PacAndroidGame(LevelLoader loader) {
-        this.loader = loader;
+        this.loader = new LevelLoader();
     }
 
     @Override
@@ -42,10 +39,8 @@ public class PacAndroidGame extends Game {
     }
 
     public void play() {
-        if (loader != null)
-            setScreen(new GameScreen(this, loader, fontRenderer));
-        else
-            setScreen(new GameScreen(this, fontRenderer));
+        Level level = loader.loadBuiltinLevel(0);
+        setScreen(new GameScreen(this, level, fontRenderer));
     }
 
     public void mainMenu() {
