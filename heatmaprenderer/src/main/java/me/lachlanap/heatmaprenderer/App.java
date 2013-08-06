@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -17,29 +18,57 @@ import javax.imageio.ImageIO;
 public class App {
 
     public static void main(String[] args) throws IOException {
-        Path cwd = Paths.get("./maps/");
+        Path maps = Paths.get("./maps/");
+        Path output = Paths.get("./out/");
+
+        for (Path sub : Files.newDirectoryStream(maps)) {
+            if (Files.isDirectory(sub, LinkOption.NOFOLLOW_LINKS)) {
+                processMapSet(sub, "desktop", output);
+                processMapSet(sub, "android", output);
+            }
+        }
+    }
+
+    private static void processMapSet(Path setBase, String filter, Path output) throws IOException {
+        String mapName = setBase.getName(setBase.getNameCount() - 1).toString();
+
         List<Path> heatmaps = new ArrayList<Path>();
         List<Path> deathmaps = new ArrayList<Path>();
+        List<Path> stats = new ArrayList<Path>();
 
-        for (Path sub : Files.newDirectoryStream(cwd)) {
+        for (Path sub : Files.newDirectoryStream(setBase)) {
             String filename = sub.getName(sub.getNameCount() - 1).toString();
 
-            if (!filename.endsWith(".dat"))
+            if (!filename.endsWith(".dat") && !filename.endsWith(".txt"))
+                continue;
+            if (!filename.contains(filter))
                 continue;
 
             if (filename.startsWith("heatmap")) {
                 heatmaps.add(sub);
             } else if (filename.startsWith("deathmap")) {
                 deathmaps.add(sub);
+            } else if (filename.startsWith("stat")) {
+                stats.add(sub);
             }
         }
 
-        doMaps(heatmaps, "heatmap");
-        doMaps(deathmaps, "deathmap");
+        if (!stats.isEmpty())
+            doStats(stats, output.resolve(mapName + "-stats-" + filter + ".txt"));
+        if (!heatmaps.isEmpty())
+            doMaps(heatmaps, output.resolve(mapName + "-heatmap-" + filter + ".png"));
+        if (!deathmaps.isEmpty())
+            doMaps(deathmaps, output.resolve(mapName + "-deathmap-" + filter + ".png"));
     }
 
-    private static void doMaps(List<Path> maps, String name) throws IOException {
-        File out = new File(name + ".png");
+    private static void doStats(List<Path> maps, Path outputPath) throws IOException {
+        StatCalculator calculator = new StatCalculator();
+        calculator.loadAll(maps);
+        calculator.write(outputPath);
+    }
+
+    private static void doMaps(List<Path> maps, Path outputPath) throws IOException {
+        File out = outputPath.toFile();
 
         HeatRenderer heatRenderer = new HeatRenderer();
         int[][] map;
@@ -59,19 +88,6 @@ public class App {
             heatRenderer.loadAppend(path.toString());
         }
 
-        BufferedImage heatmap = heatRenderer.process();
-        compositeOnMap(map, heatmap, out);
-    }
-
-    private static void doMap(String filename) throws IOException {
-        File file = new File(filename);
-
-        String outFilename = file.getCanonicalPath();
-        outFilename = outFilename.substring(0, outFilename.lastIndexOf('.'));
-        File out = new File(outFilename + ".png");
-
-        HeatRenderer heatRenderer = new HeatRenderer();
-        int[][] map = heatRenderer.load(filename);
         BufferedImage heatmap = heatRenderer.process();
         compositeOnMap(map, heatmap, out);
     }
